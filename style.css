@@ -207,6 +207,6 @@ pre {
 
 #helpText {
     position: sticky;
-    margin-left: 5px; /* Space between button and text */
+    margin-left: 10px; /* Space between button and text */
     color: white;
 }
