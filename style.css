@@ -196,6 +196,7 @@ header {
     height: 160px;
 }
 
+/* Hides rendering page screen when not rendering */
 #refreshNote {
     display: none;
 }
@@ -220,12 +221,7 @@ header {
         }
 }
 
-.iphone {
-    width: 160px;
-    height: 160px;
-}
-
-/* Styles for the question mark button */
+/* Styles for help button */
 #questionMarkButton {
     position: sticky;
     bottom: 25px;
@@ -244,17 +240,18 @@ header {
 
 /* Style for the help box */
 #helpBox {
-    position: fixed; /* Position fixed to stay in place on scroll */
-    bottom: 20px; /* Distance from the bottom */
-    left: 20px; /* Distance from the right */
-    border-radius: 8px; /* Rounded corners */
-    padding: 10px; /* Padding inside the box */
-    display: flex; /* Flexbox for aligning items */
-    align-items: center; /* Center items vertically */
-    background-color: #282828; /* Background color for the box */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow for the box */
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #282828;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Text next to the question mark button */
 #helpText {
     position: sticky;
     margin-left: 10px; /* Space between button and text */
