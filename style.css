@@ -200,15 +200,6 @@ header {
     display: none;
 }
 
-pre {
-    background-color: #f4f4f4;
-    padding: 10px;
-    border-radius: 8px;
-    overflow-x: auto;
-    max-height: 300px;
-    white-space: pre-wrap;
-}
-
 /* Add spacing to buttons */
 #uploadFile button {
     margin: 10px 5px;
