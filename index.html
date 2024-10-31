@@ -166,6 +166,56 @@
     }
 });
     </script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const viewButton = document.getElementById('viewButton');
+            const fileInput = document.getElementById('fileInput');
+
+            // Initially remove the glow effect
+            viewButton.classList.remove('glow');
+
+            // Add event listener to the file input
+            fileInput.addEventListener('change', function() {
+                // Check if a file is selected
+                if (fileInput.files.length > 0) {
+                    viewButton.classList.add('glow'); // Add glow effect
+                } else {
+                    viewButton.classList.remove('glow'); // Remove glow effect
+                }
+            });
+
+            // Existing event listener for the view button
+            viewButton.addEventListener('click', function () {
+                const file = fileInput.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (event) {
+                        const fileContent = event.target.result;
+
+                        // Update the render text with the file name and toggle visibility
+                        document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
+                        document.getElementById('uploadFile').style.display = 'none';
+                        document.getElementById('refreshNote').style.display = 'block';
+
+                        // Wait 5 seconds before rendering the content
+                        setTimeout(function () {
+                            // Replace the entire document with the uploaded HTML content
+                            document.open();
+                            document.write(fileContent);
+                            document.close();
+                        }, 5000); // 5000ms = 5 seconds
+                    };
+
+                    reader.readAsText(file);
+                } else {
+                    showAlert('Select file before rendering');
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
