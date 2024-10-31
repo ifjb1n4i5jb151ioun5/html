@@ -21,7 +21,6 @@ button {
     border-radius: 8px;
     cursor: pointer;
     box-shadow: 0px 0px 10px rgba(82, 95, 122, 0.7);
-    animation: glow 2s infinite ease-in-out; /* Add the glow animation */
 }
 
 html, body { /* Prevent scrolling on Safari iOS */
