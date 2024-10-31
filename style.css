@@ -44,7 +44,7 @@ body::after {
                 radial-gradient(circle at 80% 60%, #525f7a 10%, transparent 50%) 1px 1px,
                 radial-gradient(circle at 30% 80%, #525f7a 10%, transparent 50%) 1px 1px,
                 radial-gradient(circle at 70% 40%, #525f7a 10%, transparent 50%) 1px 1px;
-    animation: pulse 20s infinite alternate ease-in-out;
+    animation: pulse 15s infinite alternate ease-in-out;
     opacity: 0.15; /* Adjust for visibility */
 }
 
