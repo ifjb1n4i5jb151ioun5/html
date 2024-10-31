@@ -210,3 +210,8 @@ pre {
     margin-left: 10px; /* Space between button and text */
     color: white;
 }
+
+/* Glow class */
+.glow {
+    animation: glow 2s infinite ease-in-out; /* Add the glow animation */
+}

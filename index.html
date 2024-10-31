@@ -153,5 +153,19 @@
         });
     </script>
 
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function() {
+    const fileInput = document.getElementById('fileInput');
+    const viewButton = document.getElementById('viewButton');
+
+    // Check if a file is selected
+    if (fileInput.files.length > 0) {
+        viewButton.classList.add('glow'); // Add glow effect
+    } else {
+        viewButton.classList.remove('glow'); // Remove glow effect
+    }
+});
+    </script>
+
 </body>
 </html>
