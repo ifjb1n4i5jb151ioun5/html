@@ -1,0 +1,212 @@
+﻿@keyframes glow {
+    0%, 100% {
+        box-shadow: 0px 0px 10px rgba(82, 95, 122, 0.5);
+    }
+    50% {
+        box-shadow: 0px 0px 20px rgba(82, 95, 122, 0.7);
+    }
+}
+button {
+    background-color: #282828;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0px 0px 10px rgba(82, 95, 122, 0.7);
+    animation: glow 2s infinite ease-in-out; /* Add the glow animation */
+}
+
+html, body { /* Prevent scrolling on Safari iOS */
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    width: 100%;
+}
+/* Style the footer within the alert dialog */
+#alertDialog footer {
+    background-color: #282828; /* Set the footer background color */
+    color: white; /* Set the footer text color */
+    padding: 20px; /* Add padding for spacing */
+    border-top: 1px solid #444; /* Optional: add a border on top to separate the footer */
+    text-align: left; /* Center-align the button */
+}
+/* Change the alert message text color */
+#alertDialog #alertMessage {
+    color: white; /* Set the text color to white */
+}
+/* Style the dialog box itself */
+#alertDialog {
+    background-color: transparent; /* Make the outer dialog transparent */
+    padding: 0;
+    border: none;
+}
+
+    /* Style the inner box (article) */
+    #alertDialog article {
+        background-color: #282828; /* Set background color of the actual box */
+        color: white; /* Set text color */
+    }
+
+        /* Style the button inside the article */
+        #alertDialog article button {
+            background-color: #282828; /* Set button background color */
+            color: white; /* Set button text color */
+            cursor: pointer;
+            float: right;
+        }
+
+#refreshNote {
+    background-color: transparent !important; /* Make the outer container transparent */
+    text-align: center;
+}
+
+    /* Style the inner element specifically */
+    #refreshNote article {
+        background-color: #282828 !important; /* Apply the dark background color to the inner box */
+        color: white !important; /* Set text color */
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+main {
+    display: flex;
+    flex-direction: column; /* Center the main content horizontally and vertically */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Ensures it takes up the full viewport height */
+    margin: 0 auto; /* Center horizontally */
+}
+
+#viewButton {
+    background-color: #282828; /* Render Button */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Adjust padding for button size */
+    border: none;
+    border-radius: 8px; /* Optional: rounded corners */
+    cursor: pointer;
+}
+
+body {
+    background-color: #131313; /* Background */
+}
+
+#uploadFile {
+    background-color: #282828; /* Main Box Background */
+    padding: 40px; /* Add padding to make it stand out */
+    border-radius: 8px; /* Optional: rounded corners */
+}
+/* Override Pico CSS */
+main,
+header {
+    max-width: 700px !important;
+    margin: 0 auto;
+}
+
+.centeredContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+
+.iphone {
+    width: 160px;
+    height: 160px;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+#refreshNote {
+    display: none;
+}
+
+pre {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
+    max-height: 300px;
+    white-space: pre-wrap;
+}
+
+/* Add spacing to buttons */
+#uploadFile button {
+    margin: 10px 5px;
+}
+
+/* Make buttons stack vertically with spacing on smaller screens */
+@media (max-width: 700px) {
+    #uploadFile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        #uploadFile button {
+            width: 100%;
+            max-width: 300px;
+            margin: 10px 0;
+        }
+}
+
+.iphone {
+    width: 160px;
+    height: 160px;
+}
+
+/* Styles for the question mark button */
+#questionMarkButton {
+    position: sticky;
+    bottom: 25px;
+    left: 25px;
+    background-color: #282828;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style for the help box */
+#helpBox {
+    position: fixed; /* Position fixed to stay in place on scroll */
+    bottom: 20px; /* Distance from the bottom */
+    left: 20px; /* Distance from the right */
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px; /* Padding inside the box */
+    display: flex; /* Flexbox for aligning items */
+    align-items: center; /* Center items vertically */
+    background-color: #282828; /* Background color for the box */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow for the box */
+}
+
+#helpText {
+    position: sticky;
+    margin-left: 5px; /* Space between button and text */
+    color: white;
+}

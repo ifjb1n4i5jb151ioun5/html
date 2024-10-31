@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS HTML Viewer</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#131313">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Enter Name...">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.classless.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.pumpkin.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Prism.js CSS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <main>
+        <article id="uploadFile">
+            <input type="file" id="fileInput">
+            <button id="viewButton">Render</button>
+            <button id="changeIconButton">Change Icon</button>
+        </article>
+
+        <div id="refreshNote">
+            <article>
+                <strong><span id="renderText" aria-busy="true">Rendering Page</span></strong>
+            </article>
+        </div>
+    </main>
+
+    <!-- Modal for alerts -->
+    <dialog id="alertDialog">
+        <article>
+            <p id="alertMessage">Select file before rendering</p>
+            <button data-target="alertDialog">OK</button>
+        </article>
+    </dialog>
+
+    <!-- Prism.js JavaScript for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+    <script>
+        // Show the alert dialog with a custom message
+        function showAlert(message) {
+            const alertDialog = document.getElementById('alertDialog');
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.innerHTML = message;
+            alertDialog.showModal();
+
+            // Close dialog on 'OK' button click
+            document.querySelectorAll('[data-target="alertDialog"]').forEach(function (element) {
+                element.addEventListener('click', function () {
+                    alertDialog.close();
+                });
+            });
+        }
+
+        document.getElementById('viewButton').addEventListener('click', function () {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    const fileContent = event.target.result;
+
+                    // Update the render text with the file name and toggle visibility
+                    document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
+                    document.getElementById('uploadFile').style.display = 'none';
+                    document.getElementById('refreshNote').style.display = 'block';
+
+                    // Wait 5 seconds before rendering the content
+                    setTimeout(function () {
+                        // Replace the entire document with the uploaded HTML content
+                        document.open();
+                        document.write(fileContent);
+                        document.close();
+                    }, 5000); // 5000ms = 5 seconds
+                };
+
+                reader.readAsText(file);
+            } else {
+                showAlert('Select file before rendering');
+            }
+        });
+    </script>
+
+    <script>
+        // Changes the apple touch icon (homescreen icon) using the change icon button
+        document.getElementById('changeIconButton').addEventListener('click', function () {
+            const newIconURL = prompt('URL of image:');
+            if (newIconURL) {
+                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                if (appleTouchIcon) {
+                    appleTouchIcon.href = newIconURL;
+                    showAlert(`Icon updated to: ${newIconURL}`);
+                } else {
+                    showAlert('Icon invalid');
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // Checks if the site is running as an app on the homescreen and hides the change icon button and help page if it is
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.navigator.standalone) {
+                document.getElementById("changeIconButton").style.display = "none";
+                document.getElementById("questionMarkButton").style.display = "none";
+                document.getElementById("helpBox").style.display = "none"; // Hide the help box in standalone modez
+            }
+        });
+    </script>
+
+    <script>
+        // Checks if the site is running in the browser and hides the file input and render button if it is
+        document.addEventListener("DOMContentLoaded", function () {
+            if (!window.navigator.standalone) {
+                document.getElementById("fileInput").style.display = "none";
+                document.getElementById("viewButton").style.display = "none";
+            }
+        });
+    </script>
+
+    <!-- Help box -->
+    <div id="helpBox">
+        <button id="questionMarkButton" title="Help">?</button>
+        <span id="helpText">Help</span>
+    </div>
+
+    <script>
+        document.getElementById('questionMarkButton').addEventListener('click', function () {
+            showAlert('Step 1: Upload new icon<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Rename app');
+        });
+    </script>
+
+</body>
+</html>
