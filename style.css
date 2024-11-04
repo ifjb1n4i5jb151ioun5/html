@@ -2,24 +2,31 @@
 body {
     position: relative;
     overflow: hidden;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Overlay gradient to control opacity at the top of the page - Fade effect */
+#fadeOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(to bottom, rgba(19, 19, 19, 0.9), rgba(19, 19, 19, 0) 40%);
 }
 
 /* Start and end properties of animation */
 body::before,
 body::after {
     content: '';
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: -1;
-    background-attachment: fixed;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Layer one: random circular spots with fade-in and fade-out effect */
@@ -30,8 +37,6 @@ body::before {
                 radial-gradient(circle at 40% 80%, #525f7a 10%, transparent 50%);
     animation: pulse 10s infinite alternate ease-in-out;
     opacity: 0.15;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Layer two: more random circles with different animation timing */
@@ -42,8 +47,6 @@ body::after {
                 radial-gradient(circle at 70% 40%, #525f7a 10%, transparent 50%);
     animation: pulse 15s infinite alternate ease-in-out;
     opacity: 0.15;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Animation to create pulsing fade-in and fade-out effect */
@@ -87,13 +90,11 @@ button {
 /* Prevent scrolling on Safari iOS */
 html, body {
     overflow: hidden;
-    height: 100vh;
+    height: 100%;
     margin: 0;
     padding: 0;
     position: fixed;
-    width: 100vw;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+    width: 100%;
 }
 
 /* Style the footer within the alert dialog */
