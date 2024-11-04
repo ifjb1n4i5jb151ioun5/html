@@ -204,12 +204,6 @@ header {
     text-align: center;
 }
 
-/* Width and height settings for iPhones */
-.iphone {
-    width: 160px;
-    height: 160px;
-}
-
 /* Hides rendering page screen when not rendering */
 #refreshNote {
     display: none;
