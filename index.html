@@ -41,7 +41,7 @@
         <article id="uploadFile">
             <input type="file" id="fileInput">
             <button id="viewButton">Decrypt and Render</button>
-            <button id="changeIconButton">Change Icon</button>
+            <button id="uploadIconConfigButton">Upload Icon Config</button>
         </article>
 
         <div id="refreshNote">
@@ -58,6 +58,12 @@
             <button data-target="alertDialog">OK</button>
         </article>
     </dialog>
+
+    <!-- Help box -->
+    <div id="helpBox">
+        <button id="questionMarkButton" title="Help">?</button>
+        <span id="helpText">Help</span>
+    </div>
 
     <!-- Prism.js JavaScript for syntax highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -136,36 +142,16 @@
                 showAlert('Select file before decrypting');
             }
         });
-    </script>
 
-    <script>
-        // Changes the apple touch icon (homescreen icon) using the change icon button
-        document.getElementById('changeIconButton').addEventListener('click', function () {
-            const newIconURL = prompt('URL of image:');
-            if (newIconURL) {
-                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
-                if (appleTouchIcon) {
-                    appleTouchIcon.href = newIconURL;
-                    showAlert(`Icon updated to: ${newIconURL}`);
-                } else {
-                    showAlert('Icon invalid');
-                }
-            }
-        });
-    </script>
-
-    <script>
-        // Checks if the site is running as an app on the homescreen and hides the change icon button and help page if it is
+        // Checks if the site is running as an app on the homescreen and hides the upload icon config button and help page if it is
         document.addEventListener("DOMContentLoaded", function () {
             if (window.navigator.standalone) {
-                document.getElementById("changeIconButton").style.display = "none";
+                document.getElementById("uploadIconConfigButton").style.display = "none";
                 document.getElementById("questionMarkButton").style.display = "none";
                 document.getElementById("helpBox").style.display = "none"; // Hide the help box in standalone mode
             }
         });
-    </script>
 
-    <script>
         // Checks if the site is running in the browser and hides the file input and decrypt button if it is
         document.addEventListener("DOMContentLoaded", function () {
             if (!window.navigator.standalone) {
@@ -173,21 +159,11 @@
                 document.getElementById("viewButton").style.display = "none";
             }
         });
-    </script>
 
-    <!-- Help box -->
-    <div id="helpBox">
-        <button id="questionMarkButton" title="Help">?</button>
-        <span id="helpText">Help</span>
-    </div>
-
-    <script>
         document.getElementById('questionMarkButton').addEventListener('click', function () {
-            showAlert('Step 1: Upload new icon<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Rename app');
+            showAlert('Step 1: Upload icon config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
         });
-    </script>
 
-    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const viewButton = document.getElementById('viewButton');
             const fileInput = document.getElementById('fileInput');
@@ -205,7 +181,75 @@
                 }
             });
         });
-    </script>
 
+        // Function to handle icon config upload and processing
+        function handleIconConfigUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const encryptedContent = e.target.result;
+                    const passphrase = prompt("Enter the passphrase to decrypt the icon config file:");
+                    
+                    if (passphrase) {
+                        try {
+                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                            const [iconUrl, appTitle] = decrypted.split('\n');
+                            
+                            if (iconUrl && appTitle) {
+                                updateIconAndTitle(iconUrl, appTitle);
+                                showAlert('Icon and app title updated successfully.');
+                            } else {
+                                showAlert('Invalid icon config file format.');
+                            }
+                        } catch (error) {
+                            showAlert('Decryption error: ' + error.message);
+                        }
+                    } else {
+                        showAlert('Passphrase is required for decryption.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function updateIconAndTitle(iconUrl, appTitle) {
+            const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+            if (appleTouchIcon) {
+                appleTouchIcon.href = iconUrl;
+            } else {
+                const newLink = document.createElement('link');
+                newLink.rel = 'apple-touch-icon';
+                newLink.href = iconUrl;
+                document.head.appendChild(newLink);
+            }
+
+            const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+            if (appTitleMeta) {
+                appTitleMeta.content = appTitle;
+            } else {
+                const newMeta = document.createElement('meta');
+                newMeta.name = 'apple-mobile-web-app-title';
+                newMeta.content = appTitle;
+                document.head.appendChild(newMeta);
+            }
+        }
+
+        // Add event listener for the upload icon config button
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
+            const iconConfigInput = document.createElement('input');
+            iconConfigInput.type = 'file';
+            iconConfigInput.style.display = 'none';
+            
+            uploadIconConfigButton.addEventListener('click', function() {
+                iconConfigInput.click();
+            });
+            
+            iconConfigInput.addEventListener('change', handleIconConfigUpload);
+            
+            document.body.appendChild(iconConfigInput);
+        });
+    </script>
 </body>
 </html>
