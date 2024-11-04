@@ -126,7 +126,7 @@ html, body {
 
 /* Style the button inside the article */
 #alertDialog article button {
-    background-color: #282828;
+    background-color: #525f7a;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -144,12 +144,12 @@ html, body {
 
 /* Add a subtle animation for the dialog appearance */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 #alertDialog[open] {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.2s ease-out;
 }
 
 /* Rendering page screen */
