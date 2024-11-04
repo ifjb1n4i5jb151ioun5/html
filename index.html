@@ -40,13 +40,13 @@
     <main>
         <article id="uploadFile">
             <input type="file" id="fileInput">
-            <button id="viewButton">Render</button>
+            <button id="viewButton">Decrypt</button>
             <button id="changeIconButton">Change Icon</button>
         </article>
 
         <div id="refreshNote">
             <article>
-                <strong><span id="renderText" aria-busy="true">Rendering Page</span></strong>
+                <strong><span id="renderText" aria-busy="true">Decrypting</span></strong>
             </article>
         </div>
     </main>
@@ -54,7 +54,7 @@
     <!-- Modal for alerts -->
     <dialog id="alertDialog">
         <article>
-            <p id="alertMessage">Select file before rendering</p>
+            <p id="alertMessage">Select file before decrypting</p>
             <button data-target="alertDialog">OK</button>
         </article>
     </dialog>
@@ -93,36 +93,47 @@
                     
                     if (passphrase) {
                         try {
-                            // Decrypt the content
-                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                            
-                            if (decrypted) {
-                                // Update the render text with the file name and toggle visibility
-                                document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
-                                document.getElementById('uploadFile').style.display = 'none';
-                                document.getElementById('refreshNote').style.display = 'block';
+                            // Show decrypting notification
+                            document.getElementById('renderText').textContent = `Decrypting "${file.name}"`;
+                            document.getElementById('uploadFile').style.display = 'none';
+                            document.getElementById('refreshNote').style.display = 'block';
 
-                                // Wait 5 seconds before rendering the content
-                                setTimeout(function () {
-                                    // Replace the entire document with the decrypted HTML content
-                                    document.open();
-                                    document.write(decrypted);
-                                    document.close();
-                                }, 5000); // 5000ms = 5 seconds
-                            } else {
-                                showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
-                            }
+                            // Decrypt the content
+                            setTimeout(function() {
+                                const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                                
+                                if (decrypted) {
+                                    // Update the render text with the file name and toggle visibility
+                                    document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
+
+                                    // Wait 5 seconds before rendering the content
+                                    setTimeout(function () {
+                                        // Replace the entire document with the decrypted HTML content
+                                        document.open();
+                                        document.write(decrypted);
+                                        document.close();
+                                    }, 5000); // 5000ms = 5 seconds
+                                } else {
+                                    showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
+                                    document.getElementById('uploadFile').style.display = 'block';
+                                    document.getElementById('refreshNote').style.display = 'none';
+                                }
+                            }, 2000); // Show decryption message for 2 seconds
                         } catch (error) {
                             showAlert('Decryption error: ' + error.message);
+                            document.getElementById('uploadFile').style.display = 'block';
+                            document.getElementById('refreshNote').style.display = 'none';
                         }
                     } else {
                         showAlert('Passphrase is required for decryption.');
+                        document.getElementById('uploadFile').style.display = 'block';
+                        document.getElementById('refreshNote').style.display = 'none';
                     }
                 };
 
                 reader.readAsText(file);
             } else {
-                showAlert('Select file before rendering');
+                showAlert('Select file before decrypting');
             }
         });
     </script>
@@ -155,7 +166,7 @@
     </script>
 
     <script>
-        // Checks if the site is running in the browser and hides the file input and render button if it is
+        // Checks if the site is running in the browser and hides the file input and decrypt button if it is
         document.addEventListener("DOMContentLoaded", function () {
             if (!window.navigator.standalone) {
                 document.getElementById("fileInput").style.display = "none";
