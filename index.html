@@ -25,10 +25,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
             integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- CryptoJS for AES decryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 
 <body>
@@ -84,20 +86,38 @@
                 const reader = new FileReader();
 
                 reader.onload = function (event) {
-                    const fileContent = event.target.result;
+                    const encryptedContent = event.target.result;
+                    
+                    // Prompt for passphrase
+                    const passphrase = prompt("Enter the passphrase to decrypt the file:");
+                    
+                    if (passphrase) {
+                        try {
+                            // Decrypt the content
+                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                            
+                            if (decrypted) {
+                                // Update the render text with the file name and toggle visibility
+                                document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
+                                document.getElementById('uploadFile').style.display = 'none';
+                                document.getElementById('refreshNote').style.display = 'block';
 
-                    // Update the render text with the file name and toggle visibility
-                    document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
-                    document.getElementById('uploadFile').style.display = 'none';
-                    document.getElementById('refreshNote').style.display = 'block';
-
-                    // Wait 5 seconds before rendering the content
-                    setTimeout(function () {
-                        // Replace the entire document with the uploaded HTML content
-                        document.open();
-                        document.write(fileContent);
-                        document.close();
-                    }, 5000); // 5000ms = 5 seconds
+                                // Wait 5 seconds before rendering the content
+                                setTimeout(function () {
+                                    // Replace the entire document with the decrypted HTML content
+                                    document.open();
+                                    document.write(decrypted);
+                                    document.close();
+                                }, 5000); // 5000ms = 5 seconds
+                            } else {
+                                showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
+                            }
+                        } catch (error) {
+                            showAlert('Decryption error: ' + error.message);
+                        }
+                    } else {
+                        showAlert('Passphrase is required for decryption.');
+                    }
                 };
 
                 reader.readAsText(file);
@@ -129,7 +149,7 @@
             if (window.navigator.standalone) {
                 document.getElementById("changeIconButton").style.display = "none";
                 document.getElementById("questionMarkButton").style.display = "none";
-                document.getElementById("helpBox").style.display = "none"; // Hide the help box in standalone modez
+                document.getElementById("helpBox").style.display = "none"; // Hide the help box in standalone mode
             }
         });
     </script>
@@ -157,20 +177,6 @@
     </script>
 
     <script>
-        document.getElementById('fileInput').addEventListener('change', function() {
-    const fileInput = document.getElementById('fileInput');
-    const viewButton = document.getElementById('viewButton');
-
-    // Check if a file is selected
-    if (fileInput.files.length > 0) {
-        viewButton.classList.add('glow'); // Add glow effect
-    } else {
-        viewButton.classList.remove('glow'); // Remove glow effect
-    }
-});
-    </script>
-    
-    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const viewButton = document.getElementById('viewButton');
             const fileInput = document.getElementById('fileInput');
@@ -185,36 +191,6 @@
                     viewButton.classList.add('glow'); // Add glow effect
                 } else {
                     viewButton.classList.remove('glow'); // Remove glow effect
-                }
-            });
-
-            // Existing event listener for the view button
-            viewButton.addEventListener('click', function () {
-                const file = fileInput.files[0];
-
-                if (file) {
-                    const reader = new FileReader();
-
-                    reader.onload = function (event) {
-                        const fileContent = event.target.result;
-
-                        // Update the render text with the file name and toggle visibility
-                        document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
-                        document.getElementById('uploadFile').style.display = 'none';
-                        document.getElementById('refreshNote').style.display = 'block';
-
-                        // Wait 5 seconds before rendering the content
-                        setTimeout(function () {
-                            // Replace the entire document with the uploaded HTML content
-                            document.open();
-                            document.write(fileContent);
-                            document.close();
-                        }, 5000); // 5000ms = 5 seconds
-                    };
-
-                    reader.readAsText(file);
-                } else {
-                    showAlert('Select file before rendering');
                 }
             });
         });
