@@ -16,18 +16,6 @@ body {
     background: linear-gradient(to bottom, rgba(19, 19, 19, 0.9), rgba(19, 19, 19, 0) 40%);
 }
 
-/* Overlay gradient to control opacity at the top of the page - Fade effect */
-#fadeOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 1;
-    background: linear-gradient(to bottom, rgba(19, 19, 19, 0.9), rgba(19, 19, 19, 0) 40%);
-}
-
 /* Start and end properties of animation */
 body::before,
 body::after {
@@ -85,7 +73,7 @@ body::after {
 
 /* Glow class - Apply .glow to make items glow */
 .glow {
-    animation: glow 2s infinite ease-in-out; /* Add the glow animation */
+    animation: glow 2s infinite ease-in-out;
 }
 
 /* Properties of buttons */
@@ -109,38 +97,60 @@ html, body {
     width: 100%;
 }
 
-/* Style the footer within the alert dialog */
-#alertDialog footer {
-    background-color: #282828;
-    color: white;
-    padding: 20px;
-    border-top: 1px solid #444;
-    text-align: left;
-}
-
-/* Alert message text color */
-#alertDialog #alertMessage {
-    color: white;
-}
-
 /* Style the dialog box itself */
 #alertDialog {
     background-color: transparent;
     padding: 0;
     border: none;
+    border-radius: 8px;
+    max-width: 300px;
+    width: 90%;
 }
 
-    /* Style the inner box */
-    #alertDialog article {
-        background-color: #282828;
-        color: white;
-    }
+/* Style the inner box */
+#alertDialog article {
+    background-color: #282828;
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-        /* Style the button inside the article */
-        #alertDialog article button {
-            cursor: pointer;
-            float: right;
-        }
+/* Alert message text style */
+#alertDialog #alertMessage {
+    color: white;
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* Style the button inside the article */
+#alertDialog article button {
+    background-color: #282828;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#alertDialog article button:hover {
+    background-color: #3a4358;
+}
+
+/* Add a subtle animation for the dialog appearance */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#alertDialog[open] {
+    animation: fadeIn 0.3s ease-out;
+}
 
 /* Rendering page screen */
 #refreshNote {
@@ -148,13 +158,12 @@ html, body {
     text-align: center;
 }
 
-    /* Style the inner element specifically */
-    #refreshNote article {
-        background-color: #282828 !important;
-        color: white !important;
-        padding: 15px;
-        border-radius: 8px;
-    }
+#refreshNote article {
+    background-color: #282828 !important;
+    color: white !important;
+    padding: 15px;
+    border-radius: 8px;
+}
 
 /* Properties of main box that contains the change icon and render buttons */
 main {
@@ -222,11 +231,11 @@ header {
         align-items: center;
     }
 
-        #uploadFile button {
-            width: 100%;
-            max-width: 300px;
-            margin: 10px 0;
-        }
+    #uploadFile button {
+        width: 100%;
+        max-width: 300px;
+        margin: 10px 0;
+    }
 }
 
 /* Styles for help button */
