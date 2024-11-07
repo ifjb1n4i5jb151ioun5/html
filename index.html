@@ -31,6 +31,41 @@
     
     <!-- CryptoJS for AES decryption -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <style>
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loadingText {
+            color: white;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -65,6 +100,12 @@
         <span id="helpText">Help</span>
     </div>
 
+    <!-- Loading overlay -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Loading...</p>
+    </div>
+
     <!-- Prism.js JavaScript for syntax highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 
@@ -84,64 +125,79 @@
             });
         }
 
-        document.getElementById('viewButton').addEventListener('click', function () {
+        window.onload = function() {
             const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
+            const viewButton = document.getElementById('viewButton');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            const refreshNote = document.getElementById('refreshNote');
+            const renderText = document.getElementById('renderText');
+            const uploadFile = document.getElementById('uploadFile');
 
-            if (file) {
-                const reader = new FileReader();
+            viewButton.addEventListener('click', function () {
+                const file = fileInput.files[0];
 
-                reader.onload = function (event) {
-                    const encryptedContent = event.target.result;
-                    
-                    // Prompt for passphrase
-                    const passphrase = prompt("Enter the passphrase to decrypt the file:");
-                    
-                    if (passphrase) {
-                        try {
-                            // Show decrypting notification
-                            document.getElementById('renderText').textContent = `Decrypting "${file.name}"`;
-                            document.getElementById('uploadFile').style.display = 'none';
-                            document.getElementById('refreshNote').style.display = 'block';
+                if (file) {
+                    const reader = new FileReader();
 
-                            // Decrypt the content
-                            setTimeout(function() {
-                                const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                                
-                                if (decrypted) {
-                                    // Update the render text with the file name and toggle visibility
-                                    document.getElementById('renderText').textContent = `Rendering "${file.name}"`;
+                    reader.onload = function (event) {
+                        const encryptedContent = event.target.result;
+                        
+                        // Prompt for passphrase
+                        const passphrase = prompt("Enter the passphrase to decrypt the file:");
+                        
+                        if (passphrase) {
+                            try {
+                                // Show decrypting notification
+                                renderText.textContent = `Decrypting "${file.name}"`;
+                                uploadFile.style.display = 'none';
+                                refreshNote.style.display = 'block';
+                                loadingOverlay.style.display = 'flex';
 
-                                    // Wait 5 seconds before rendering the content
-                                    setTimeout(function () {
-                                        // Replace the entire document with the decrypted HTML content
-                                        document.open();
-                                        document.write(decrypted);
-                                        document.close();
-                                    }, 5000); // 5000ms = 5 seconds
-                                } else {
-                                    showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
-                                    document.getElementById('uploadFile').style.display = 'block';
-                                    document.getElementById('refreshNote').style.display = 'none';
-                                }
-                            }, 2000); // Show decryption message for 2 seconds
-                        } catch (error) {
-                            showAlert('Decryption error: ' + error.message);
-                            document.getElementById('uploadFile').style.display = 'block';
-                            document.getElementById('refreshNote').style.display = 'none';
+                                // Decrypt the content
+                                setTimeout(function() {
+                                    const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                                    
+                                    if (decrypted) {
+                                        // Update the render text with the file name
+                                        renderText.textContent = `Rendering "${file.name}"`;
+                                        loadingText.textContent = `Rendering "${file.name}"`;
+
+                                        // Wait 2 seconds before rendering the content (for visual feedback)
+                                        setTimeout(function () {
+                                            // Replace the entire document with the decrypted HTML content
+                                            document.open();
+                                            document.write(decrypted);
+                                            document.close();
+
+                                            // The new page will load, and its window.onload event will fire when ready
+                                        }, 2000);
+                                    } else {
+                                        showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
+                                        uploadFile.style.display = 'block';
+                                        refreshNote.style.display = 'none';
+                                        loadingOverlay.style.display = 'none';
+                                    }
+                                }, 2000); // Show decryption message for 2 seconds
+                            } catch (error) {
+                                showAlert('Decryption error: ' + error.message);
+                                uploadFile.style.display = 'block';
+                                refreshNote.style.display = 'none';
+                                loadingOverlay.style.display = 'none';
+                            }
+                        } else {
+                            showAlert('Passphrase is required for decryption.');
+                            uploadFile.style.display = 'block';
+                            refreshNote.style.display = 'none';
                         }
-                    } else {
-                        showAlert('Passphrase is required for decryption.');
-                        document.getElementById('uploadFile').style.display = 'block';
-                        document.getElementById('refreshNote').style.display = 'none';
-                    }
-                };
+                    };
 
-                reader.readAsText(file);
-            } else {
-                showAlert('Select file before decrypting');
-            }
-        });
+                    reader.readAsText(file);
+                } else {
+                    showAlert('Select file before decrypting');
+                }
+            });
+        };
 
         // Checks if the site is running as an app on the homescreen and hides the upload icon config button and help page if it is
         document.addEventListener("DOMContentLoaded", function () {
