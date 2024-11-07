@@ -31,41 +31,6 @@
     
     <!-- CryptoJS for AES decryption -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-    <style>
-        #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #loadingText {
-            color: white;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 
 <body>
@@ -100,12 +65,6 @@
         <span id="helpText">Help</span>
     </div>
 
-    <!-- Loading overlay -->
-    <div id="loadingOverlay">
-        <div class="spinner"></div>
-        <p id="loadingText">Loading...</p>
-    </div>
-
     <!-- Prism.js JavaScript for syntax highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 
@@ -128,8 +87,6 @@
         window.onload = function() {
             const fileInput = document.getElementById('fileInput');
             const viewButton = document.getElementById('viewButton');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
             const refreshNote = document.getElementById('refreshNote');
             const renderText = document.getElementById('renderText');
             const uploadFile = document.getElementById('uploadFile');
@@ -152,7 +109,6 @@
                                 renderText.textContent = `Decrypting "${file.name}"`;
                                 uploadFile.style.display = 'none';
                                 refreshNote.style.display = 'block';
-                                loadingOverlay.style.display = 'flex';
 
                                 // Decrypt the content
                                 setTimeout(function() {
@@ -161,7 +117,6 @@
                                     if (decrypted) {
                                         // Update the render text with the file name
                                         renderText.textContent = `Rendering "${file.name}"`;
-                                        loadingText.textContent = `Rendering "${file.name}"`;
 
                                         // Wait 2 seconds before rendering the content (for visual feedback)
                                         setTimeout(function () {
@@ -170,20 +125,22 @@
                                             document.write(decrypted);
                                             document.close();
 
-                                            // The new page will load, and its window.onload event will fire when ready
+                                            // Add an event listener to the new document to detect when it's fully loaded
+                                            window.addEventListener('load', function() {
+                                                console.log('New page fully loaded');
+                                                // You can add any additional actions here if needed
+                                            });
                                         }, 2000);
                                     } else {
                                         showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
                                         uploadFile.style.display = 'block';
                                         refreshNote.style.display = 'none';
-                                        loadingOverlay.style.display = 'none';
                                     }
                                 }, 2000); // Show decryption message for 2 seconds
                             } catch (error) {
                                 showAlert('Decryption error: ' + error.message);
                                 uploadFile.style.display = 'block';
                                 refreshNote.style.display = 'none';
-                                loadingOverlay.style.display = 'none';
                             }
                         } else {
                             showAlert('Passphrase is required for decryption.');
