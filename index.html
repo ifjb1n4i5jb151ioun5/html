@@ -27,11 +27,11 @@
     <main>
         <article id="uploadFile">
             <input type="file" id="fileInput">
-            <button id="viewButton">Decrypt and Render</button>
             <div id="rememberPasswordContainer" style="display: none;">
                 <input type="checkbox" id="rememberPassword">
                 <label for="rememberPassword">Remember password</label>
             </div>
+            <button id="viewButton">Decrypt and Render</button>
             <button id="clearPasswordButton" style="display: none;">Clear Saved Password</button>
             <button id="uploadIconConfigButton">Upload Config</button>
         </article>
@@ -68,7 +68,6 @@
     function savePassword(password) {
         if (document.getElementById('rememberPassword').checked) {
             localStorage.setItem('decryptionPassword', password);
-            updateRememberPasswordVisibility();
         }
     }
 
@@ -78,18 +77,6 @@
 
     function clearSavedPassword() {
         localStorage.removeItem('decryptionPassword');
-        updateRememberPasswordVisibility();
-    }
-
-    function updateRememberPasswordVisibility() {
-        const rememberPasswordContainer = document.getElementById("rememberPasswordContainer");
-        const savedPassword = getSavedPassword();
-        
-        if (savedPassword) {
-            rememberPasswordContainer.style.display = "none";
-        } else {
-            rememberPasswordContainer.style.display = "block";
-        }
     }
 
     window.onload = function() {
@@ -129,7 +116,6 @@
                                             console.log('New page fully loaded');
                                         });
                                     }, 2000);
-                                    updateRememberPasswordVisibility();
                                 } else {
                                     showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
                                     uploadFile.style.display = 'block';
@@ -164,8 +150,8 @@
             document.getElementById("uploadIconConfigButton").style.display = "none";
             document.getElementById("questionMarkButton").style.display = "none";
             document.getElementById("helpBox").style.display = "none";
+            rememberPasswordContainer.style.display = "block";
             clearPasswordButton.style.display = "block";
-            updateRememberPasswordVisibility();
         } else {
             document.getElementById("fileInput").style.display = "none";
             document.getElementById("viewButton").style.display = "none";
