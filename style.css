@@ -2,8 +2,34 @@
     color: white;
 }
 
-#checkbox-accent {
-    accent-color: #525f7a;
+#checkbox-custom {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+}
+
+#checkbox-custom:checked {
+    background-color: #007bff;
+    /* Change this to your desired color */
+    border-color: #007bff;
+    /* Change this to match the background color */
+}
+
+#checkbox-custom:checked::after {
+    content: '\2714';
+    font-size: 14px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* Base styles for animated circular noise background */
@@ -40,9 +66,9 @@ body::after {
 /* Layer one: random circular spots with fade-in and fade-out effect */
 body::before {
     background: radial-gradient(circle at 15% 30%, #525f7a 10%, transparent 50%),
-                radial-gradient(circle at 60% 70%, #525f7a 10%, transparent 50%),
-                radial-gradient(circle at 90% 20%, #525f7a 10%, transparent 50%),
-                radial-gradient(circle at 40% 80%, #525f7a 10%, transparent 50%);
+        radial-gradient(circle at 60% 70%, #525f7a 10%, transparent 50%),
+        radial-gradient(circle at 90% 20%, #525f7a 10%, transparent 50%),
+        radial-gradient(circle at 40% 80%, #525f7a 10%, transparent 50%);
     animation: pulse 10s infinite alternate ease-in-out;
     opacity: 0.15;
 }
@@ -50,19 +76,22 @@ body::before {
 /* Layer two: more random circles with different animation timing */
 body::after {
     background: radial-gradient(circle at 25% 15%, #525f7a 10%, transparent 50%),
-                radial-gradient(circle at 80% 60%, #525f7a 10%, transparent 50%),
-                radial-gradient(circle at 30% 80%, #525f7a 10%, transparent 50%),
-                radial-gradient(circle at 70% 40%, #525f7a 10%, transparent 50%);
+        radial-gradient(circle at 80% 60%, #525f7a 10%, transparent 50%),
+        radial-gradient(circle at 30% 80%, #525f7a 10%, transparent 50%),
+        radial-gradient(circle at 70% 40%, #525f7a 10%, transparent 50%);
     animation: pulse 15s infinite alternate ease-in-out;
     opacity: 0.15;
 }
 
 /* Animation to create pulsing fade-in and fade-out effect */
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0;
         transform: scale(1);
     }
+
     50% {
         opacity: 0.3;
         transform: scale(1.1);
@@ -71,9 +100,12 @@ body::after {
 
 /* Glow animation on buttons */
 @keyframes glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0px 0px 10px rgba(82, 95, 122, 0.5);
     }
+
     50% {
         box-shadow: 0px 0px 30px rgba(82, 95, 122, 0.7);
     }
@@ -96,7 +128,8 @@ button {
 }
 
 /* Prevent scrolling on Safari iOS */
-html, body {
+html,
+body {
     overflow: hidden;
     height: 100%;
     margin: 0;
@@ -152,8 +185,13 @@ html, body {
 
 /* Add a subtle animation for the dialog appearance */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 #alertDialog[open] {
@@ -279,6 +317,7 @@ header {
 /* Text next to the question mark button */
 #helpText {
     position: sticky;
-    margin-left: 10px; /* Space between button and text */
+    margin-left: 10px;
+    /* Space between button and text */
     color: white;
 }
