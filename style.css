@@ -16,9 +16,9 @@
 }
 
 #checkbox-custom:checked {
-    background-color: #007bff;
+    background-color: #525f7a;
     /* Change this to your desired color */
-    border-color: #007bff;
+    border-color: #525f7a;
     /* Change this to match the background color */
 }
 
