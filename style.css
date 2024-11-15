@@ -1,7 +1,8 @@
-﻿#rememberPasswordContainer {
+﻿#rememberpasswordtext {
     color: white;
 }
-#rememberPassword {
+
+#checkbox-accent {
     accent-color: #525f7a;
 }
 
