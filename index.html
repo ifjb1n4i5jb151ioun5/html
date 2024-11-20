@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,22 +19,19 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
-
 <body>
     <div id="fadeOverlay"></div>
     <main>
         <article id="uploadFile">
             <input type="file" id="fileInput">
-            <div id="rememberPasswordContainer" style="display: none;">
-                <input id="checkbox-custom" type="checkbox" id="rememberPassword">
-                <label id="rememberpasswordtext" for="rememberPassword">Remember password</label>
-            </div>
             <button id="viewButton">Decrypt and Render</button>
+            <div id="rememberPasswordContainer" style="display: none;">
+                <input type="checkbox" id="rememberPassword">
+                <label for="rememberPassword">Remember password</label>
+            </div>
             <button id="clearPasswordButton" style="display: none;">Clear Saved Password</button>
             <button id="uploadIconConfigButton">Upload Config</button>
         </article>
@@ -57,196 +53,195 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script>
-        function showAlert(message) {
-            const alertDialog = document.getElementById('alertDialog');
-            const alertMessage = document.getElementById('alertMessage');
-            alertMessage.innerHTML = message;
-            alertDialog.showModal();
-            document.querySelectorAll('[data-target="alertDialog"]').forEach(function (element) {
-                element.addEventListener('click', function () {
-                    alertDialog.close();
-                });
-            });
-        }
-
-        function savePassword(password) {
-            if (document.getElementById('rememberPassword').checked) {
-                localStorage.setItem('decryptionPassword', password);
-            }
-        }
-
-        function getSavedPassword() {
-            return localStorage.getItem('decryptionPassword');
-        }
-
-        function clearSavedPassword() {
-            localStorage.removeItem('decryptionPassword');
-        }
-
-        window.onload = function () {
-            const fileInput = document.getElementById('fileInput');
-            const viewButton = document.getElementById('viewButton');
-            const refreshNote = document.getElementById('refreshNote');
-            const renderText = document.getElementById('renderText');
-            const uploadFile = document.getElementById('uploadFile');
-
-            viewButton.addEventListener('click', function () {
-                const file = fileInput.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        const encryptedContent = event.target.result;
-                        let passphrase = getSavedPassword();
-                        if (!passphrase) {
-                            passphrase = prompt("Enter the passphrase to decrypt the file:");
-                            if (passphrase) {
-                                savePassword(passphrase);
-                            }
-                        }
-                        if (passphrase) {
-                            try {
-                                renderText.textContent = `Decrypting "${file.name}"`;
-                                uploadFile.style.display = 'none';
-                                refreshNote.style.display = 'block';
-                                setTimeout(function () {
-                                    const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                                    if (decrypted) {
-                                        renderText.textContent = `Rendering "${file.name}"`;
-                                        setTimeout(function () {
-                                            document.open();
-                                            document.write(decrypted);
-                                            document.close();
-                                            window.addEventListener('load', function () {
-                                                console.log('New page fully loaded');
-                                            });
-                                        }, 2000);
-                                    } else {
-                                        showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
-                                        uploadFile.style.display = 'block';
-                                        refreshNote.style.display = 'none';
-                                        clearSavedPassword();
-                                    }
-                                }, 2000);
-                            } catch (error) {
-                                showAlert('Decryption error: ' + error.message);
-                                uploadFile.style.display = 'block';
-                                refreshNote.style.display = 'none';
-                                clearSavedPassword();
-                            }
-                        } else {
-                            showAlert('Passphrase is required for decryption.');
-                            uploadFile.style.display = 'block';
-                            refreshNote.style.display = 'none';
-                        }
-                    };
-                    reader.readAsText(file);
-                } else {
-                    showAlert('Select file before decrypting');
-                }
-            });
-        };
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const rememberPasswordContainer = document.getElementById("rememberPasswordContainer");
-            const clearPasswordButton = document.getElementById("clearPasswordButton");
-
-            if (window.navigator.standalone) {
-                document.getElementById("uploadIconConfigButton").style.display = "none";
-                document.getElementById("questionMarkButton").style.display = "none";
-                document.getElementById("helpBox").style.display = "none";
-                rememberPasswordContainer.style.display = "block";
-                clearPasswordButton.style.display = "block";
-            } else {
-                document.getElementById("fileInput").style.display = "none";
-                document.getElementById("viewButton").style.display = "none";
-                rememberPasswordContainer.style.display = "none";
-                clearPasswordButton.style.display = "none";
-            }
-        });
-
-        document.getElementById('questionMarkButton').addEventListener('click', function () {
-            showAlert('Step 1: Upload icon config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const viewButton = document.getElementById('viewButton');
-            const fileInput = document.getElementById('fileInput');
-            viewButton.classList.remove('glow');
-            fileInput.addEventListener('change', function () {
-                if (fileInput.files.length > 0) {
-                    viewButton.classList.add('glow');
-                } else {
-                    viewButton.classList.remove('glow');
-                }
+    function showAlert(message) {
+        const alertDialog = document.getElementById('alertDialog');
+        const alertMessage = document.getElementById('alertMessage');
+        alertMessage.innerHTML = message;
+        alertDialog.showModal();
+        document.querySelectorAll('[data-target="alertDialog"]').forEach(function (element) {
+            element.addEventListener('click', function () {
+                alertDialog.close();
             });
         });
+    }
 
-        function handleIconConfigUpload(event) {
-            const file = event.target.files[0];
+    function savePassword(password) {
+        if (document.getElementById('rememberPassword').checked) {
+            localStorage.setItem('decryptionPassword', password);
+        }
+    }
+
+    function getSavedPassword() {
+        return localStorage.getItem('decryptionPassword');
+    }
+
+    function clearSavedPassword() {
+        localStorage.removeItem('decryptionPassword');
+    }
+
+    window.onload = function() {
+        const fileInput = document.getElementById('fileInput');
+        const viewButton = document.getElementById('viewButton');
+        const refreshNote = document.getElementById('refreshNote');
+        const renderText = document.getElementById('renderText');
+        const uploadFile = document.getElementById('uploadFile');
+
+        viewButton.addEventListener('click', function () {
+            const file = fileInput.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    const encryptedContent = e.target.result;
-                    const passphrase = prompt("Enter the passphrase to decrypt the icon config file:");
+                reader.onload = function (event) {
+                    const encryptedContent = event.target.result;
+                    let passphrase = getSavedPassword();
+                    if (!passphrase) {
+                        passphrase = prompt("Enter the passphrase to decrypt the file:");
+                        if (passphrase) {
+                            savePassword(passphrase);
+                        }
+                    }
                     if (passphrase) {
                         try {
-                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                            const [iconUrl, appTitle] = decrypted.split('\n');
-                            if (iconUrl && appTitle) {
-                                updateIconAndTitle(iconUrl, appTitle);
-                                showAlert('Icon and app title updated successfully.');
-                            } else {
-                                showAlert('Invalid icon config file format.');
-                            }
+                            renderText.textContent = `Decrypting "${file.name}"`;
+                            uploadFile.style.display = 'none';
+                            refreshNote.style.display = 'block';
+                            setTimeout(function() {
+                                const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                                if (decrypted) {
+                                    renderText.textContent = `Rendering "${file.name}"`;
+                                    setTimeout(function () {
+                                        document.open();
+                                        document.write(decrypted);
+                                        document.close();
+                                        window.addEventListener('load', function() {
+                                            console.log('New page fully loaded');
+                                        });
+                                    }, 2000);
+                                } else {
+                                    showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
+                                    uploadFile.style.display = 'block';
+                                    refreshNote.style.display = 'none';
+                                    clearSavedPassword();
+                                }
+                            }, 2000);
                         } catch (error) {
                             showAlert('Decryption error: ' + error.message);
+                            uploadFile.style.display = 'block';
+                            refreshNote.style.display = 'none';
+                            clearSavedPassword();
                         }
                     } else {
                         showAlert('Passphrase is required for decryption.');
+                        uploadFile.style.display = 'block';
+                        refreshNote.style.display = 'none';
                     }
                 };
                 reader.readAsText(file);
-            }
-        }
-
-        function updateIconAndTitle(iconUrl, appTitle) {
-            const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
-            if (appleTouchIcon) {
-                appleTouchIcon.href = iconUrl;
             } else {
-                const newLink = document.createElement('link');
-                newLink.rel = 'apple-touch-icon';
-                newLink.href = iconUrl;
-                document.head.appendChild(newLink);
+                showAlert('Select file before decrypting');
             }
-            const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-            if (appTitleMeta) {
-                appTitleMeta.content = appTitle;
-            } else {
-                const newMeta = document.createElement('meta');
-                newMeta.name = 'apple-mobile-web-app-title';
-                newMeta.content = appTitle;
-                document.head.appendChild(newMeta);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
-            const iconConfigInput = document.createElement('input');
-            iconConfigInput.type = 'file';
-            iconConfigInput.style.display = 'none';
-            uploadIconConfigButton.addEventListener('click', function () {
-                iconConfigInput.click();
-            });
-            iconConfigInput.addEventListener('change', handleIconConfigUpload);
-            document.body.appendChild(iconConfigInput);
-
-            document.getElementById('clearPasswordButton').addEventListener('click', function () {
-                clearSavedPassword();
-                showAlert('Saved password has been cleared.');
-            });
         });
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const rememberPasswordContainer = document.getElementById("rememberPasswordContainer");
+        const clearPasswordButton = document.getElementById("clearPasswordButton");
+
+        if (window.navigator.standalone) {
+            document.getElementById("uploadIconConfigButton").style.display = "none";
+            document.getElementById("questionMarkButton").style.display = "none";
+            document.getElementById("helpBox").style.display = "none";
+            rememberPasswordContainer.style.display = "block";
+            clearPasswordButton.style.display = "block";
+        } else {
+            document.getElementById("fileInput").style.display = "none";
+            document.getElementById("viewButton").style.display = "none";
+            rememberPasswordContainer.style.display = "none";
+            clearPasswordButton.style.display = "none";
+        }
+    });
+
+    document.getElementById('questionMarkButton').addEventListener('click', function () {
+        showAlert('Step 1: Upload icon config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const viewButton = document.getElementById('viewButton');
+        const fileInput = document.getElementById('fileInput');
+        viewButton.classList.remove('glow');
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                viewButton.classList.add('glow');
+            } else {
+                viewButton.classList.remove('glow');
+            }
+        });
+    });
+
+    function handleIconConfigUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const encryptedContent = e.target.result;
+                const passphrase = prompt("Enter the passphrase to decrypt the icon config file:");
+                if (passphrase) {
+                    try {
+                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                        const [iconUrl, appTitle] = decrypted.split('\n');
+                        if (iconUrl && appTitle) {
+                            updateIconAndTitle(iconUrl, appTitle);
+                            showAlert('Icon and app title updated successfully.');
+                        } else {
+                            showAlert('Invalid icon config file format.');
+                        }
+                    } catch (error) {
+                        showAlert('Decryption error: ' + error.message);
+                    }
+                } else {
+                    showAlert('Passphrase is required for decryption.');
+                }
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function updateIconAndTitle(iconUrl, appTitle) {
+        const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+        if (appleTouchIcon) {
+            appleTouchIcon.href = iconUrl;
+        } else {
+            const newLink = document.createElement('link');
+            newLink.rel = 'apple-touch-icon';
+            newLink.href = iconUrl;
+            document.head.appendChild(newLink);
+        }
+        const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+        if (appTitleMeta) {
+            appTitleMeta.content = appTitle;
+        } else {
+            const newMeta = document.createElement('meta');
+            newMeta.name = 'apple-mobile-web-app-title';
+            newMeta.content = appTitle;
+            document.head.appendChild(newMeta);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
+        const iconConfigInput = document.createElement('input');
+        iconConfigInput.type = 'file';
+        iconConfigInput.style.display = 'none';
+        uploadIconConfigButton.addEventListener('click', function() {
+            iconConfigInput.click();
+        });
+        iconConfigInput.addEventListener('change', handleIconConfigUpload);
+        document.body.appendChild(iconConfigInput);
+
+        document.getElementById('clearPasswordButton').addEventListener('click', function() {
+            clearSavedPassword();
+            showAlert('Saved password has been cleared.');
+        });
+    });
     </script>
 </body>
-
 </html>
