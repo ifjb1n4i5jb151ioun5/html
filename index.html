@@ -40,6 +40,7 @@
             <button id="viewButton" style="display: none;">Decrypt and Render</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="uploadIconConfigButton">Upload Config</button>
+            <button id="smallButton" style="display: none;">Small</button>
         </article>
         <div id="refreshNote">
             <article>
@@ -289,6 +290,20 @@
                     // Handle password submission here
                     console.log('Password entered:', passwordField.value);
                     // You can add your password handling logic here
+                }
+            });
+        });
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const fileInput = document.getElementById('fileInput');
+            const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
+            const smallButton = document.getElementById('smallButton');
+
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files.length > 0) {
+                    smallButton.style.display = 'inline-block';
+                } else {
+                    smallButton.style.display = 'none';
                 }
             });
         });
