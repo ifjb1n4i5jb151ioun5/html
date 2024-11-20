@@ -2,7 +2,7 @@
     color: white;
 }
 
-#checkbox-custom {
+#rememberPassword {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -15,11 +15,9 @@
     position: relative;
 }
 
-#checkbox-custom:checked {
+#rememberPassword:checked {
     background-color: #525f7a;
-    /* Change this to your desired color */
     border-color: #525f7a;
-    /* Change this to match the background color */
 }
 
 /* Base styles for animated circular noise background */
