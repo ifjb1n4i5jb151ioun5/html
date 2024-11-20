@@ -326,3 +326,13 @@ header {
     /* Space between button and text */
     color: white;
 }
+
+#passwordField {
+    background-color: #282828;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    width: 200px;
+    margin-top: 10px;
+}

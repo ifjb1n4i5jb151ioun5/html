@@ -36,7 +36,8 @@
                 <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
             </div>
             <button id="passwordfieldButton">Enter Password</button>
-            <button id="viewButton" style="display: none;">Decrypt and Render</button>            
+            <input type="password" id="passwordField" style="display: none;">
+            <button id="viewButton" style="display: none;">Decrypt and Render</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="uploadIconConfigButton">Upload Config</button>
         </article>
@@ -271,7 +272,26 @@
                 clearSavedPassword();
                 showAlert('Saved password has been cleared.');
             });
-        });    
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const passwordButton = document.getElementById('passwordfieldButton');
+            const passwordField = document.getElementById('passwordField');
+
+            passwordButton.addEventListener('click', function () {
+                passwordButton.style.display = 'none';
+                passwordField.style.display = 'block';
+                passwordField.focus();
+            });
+
+            passwordField.addEventListener('keyup', function (event) {
+                if (event.key === 'Enter') {
+                    // Handle password submission here
+                    console.log('Password entered:', passwordField.value);
+                    // You can add your password handling logic here
+                }
+            });
+        });
     </script>
 </body>
 
