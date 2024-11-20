@@ -35,6 +35,7 @@
                 <input type="checkbox" id="rememberPassword">
                 <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
             </div>
+            <button id="passwordfieldButton">Enter Password</button>
             <button id="viewButton" style="display: none;">Decrypt and Render</button>            
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="uploadIconConfigButton">Upload Config</button>
@@ -118,7 +119,7 @@
                         const encryptedContent = event.target.result;
                         let passphrase = getSavedPassword();
                         if (!passphrase) {
-                            passphrase = prompt("Enter the passphrase to decrypt the file:");
+                            passphrase = prompt("Enter the password to decrypt the file:");
                             if (passphrase) {
                                 savePassword(passphrase);
                             }
@@ -141,7 +142,7 @@
                                             });
                                         }, 2000);
                                     } else {
-                                        showAlert('Decryption failed. Incorrect passphrase or invalid file format.');
+                                        showAlert('Decryption failed. Incorrect password or invalid file format.');
                                         uploadFile.style.display = 'block';
                                         refreshNote.style.display = 'none';
                                         clearSavedPassword();
@@ -154,7 +155,7 @@
                                 clearSavedPassword();
                             }
                         } else {
-                            showAlert('Passphrase is required for decryption.');
+                            showAlert('Password is required for decryption.');
                             uploadFile.style.display = 'block';
                             refreshNote.style.display = 'none';
                         }
@@ -212,7 +213,7 @@
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     const encryptedContent = e.target.result;
-                    const passphrase = prompt("Enter the passphrase to decrypt the config file:");
+                    const passphrase = prompt("Enter the password to decrypt the config file:");
                     if (passphrase) {
                         try {
                             const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
@@ -227,7 +228,7 @@
                             showAlert('Decryption error: ' + error.message);
                         }
                     } else {
-                        showAlert('Passphrase is required for decryption.');
+                        showAlert('Password is required for decryption.');
                     }
                 };
                 reader.readAsText(file);
