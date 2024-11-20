@@ -32,7 +32,7 @@
                 <label for="rememberPassword">Remember password</label>
             <button id="viewButton">Decrypt and Render</button>
             </div>
-            <button id="clearPasswordButton" style="display: none;">Clear Saved Password</button>
+            <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="uploadIconConfigButton">Upload Config</button>
         </article>
         <div id="refreshNote">
@@ -43,7 +43,7 @@
     </main>
     <dialog id="alertDialog">
         <article>
-            <p id="alertMessage">Select file before decrypting</p>
+            <p id="alertMessage">File required</p>
             <button data-target="alertDialog">OK</button>
         </article>
     </dialog>
@@ -161,7 +161,7 @@
     });
 
     document.getElementById('questionMarkButton').addEventListener('click', function () {
-        showAlert('Step 1: Upload icon config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
+        showAlert('Step 1: Upload config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
     });
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -183,7 +183,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const encryptedContent = e.target.result;
-                const passphrase = prompt("Enter the passphrase to decrypt the icon config file:");
+                const passphrase = prompt("Enter the passphrase to decrypt the config file:");
                 if (passphrase) {
                     try {
                         const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
