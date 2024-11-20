@@ -76,9 +76,11 @@
 
             if (savedPassword) {
                 rememberPasswordCheckbox.checked = true;
+                rememberPasswordCheckbox.disabled = true;
                 rememberPasswordText.textContent = 'Password saved';
             } else {
                 rememberPasswordCheckbox.checked = false;
+                rememberPasswordCheckbox.disabled = false;
                 rememberPasswordText.textContent = 'Remember password';
             }
         }
