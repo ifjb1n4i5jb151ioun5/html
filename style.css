@@ -1,4 +1,11 @@
-﻿#rememberPasswordText {
+﻿input[type="checkbox"]:disabled {
+    opacity: 1;
+    pointer-events: none;
+    color: inherit;
+    background-color: inherit;
+}
+
+#rememberPasswordText {
     color: white;
 }
 
