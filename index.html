@@ -87,8 +87,9 @@
             }
         }
 
-        function savePassword(password) {
-            if (document.getElementById('rememberPassword').checked) {
+        function savePassword() {
+            const password = document.getElementById('passwordField').value;
+            if (document.getElementById('rememberPassword').checked && password) {
                 localStorage.setItem('decryptionPassword', password);
                 updateRememberPasswordState();
             }
@@ -118,12 +119,9 @@
                     const reader = new FileReader();
                     reader.onload = function (event) {
                         const encryptedContent = event.target.result;
-                        let passphrase = getSavedPassword();
+                        let passphrase = document.getElementById('passwordField').value;
                         if (!passphrase) {
-                            passphrase = prompt("Enter the password to decrypt the file:");
-                            if (passphrase) {
-                                savePassword(passphrase);
-                            }
+                            passphrase = getSavedPassword();
                         }
                         if (passphrase) {
                             try {
@@ -134,6 +132,7 @@
                                     const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
                                     if (decrypted) {
                                         renderText.textContent = `Rendering "${file.name}"`;
+                                        savePassword();
                                         setTimeout(function () {
                                             document.open();
                                             document.write(decrypted);
