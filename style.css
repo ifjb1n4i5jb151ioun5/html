@@ -336,4 +336,9 @@ header {
     width: 200px;
     margin-top: 10px;
     outline: none;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+#passwordField:focus {
+    box-shadow: 0 0 10px #525f7a, 0 0 20px #525f7a;
 }
