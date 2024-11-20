@@ -330,7 +330,6 @@ header {
 #passwordField {
     background-color: #282828;
     color: white;
-    border: 2px solid #525f7a;
     padding: 10px;
     border-radius: 8px;
     width: 200px;
@@ -340,5 +339,5 @@ header {
 }
 
 #passwordField:focus {
-    box-shadow: 0 0 10px #525f7a, 0 0 20px #525f7a;
+    box-shadow: 0 0 10px #525f7a, 0 0 8px #525f7a;
 }
