@@ -207,6 +207,7 @@
                 }
             });
         });
+
         function handleIconConfigUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -290,6 +291,20 @@
                     // You can add your password handling logic here
                 }
             });
+        });
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const passwordField = document.getElementById('passwordField');
+            const viewButton = document.getElementById('viewButton');
+            const savedPassword = getSavedPassword();
+
+            if (savedPassword) {
+                passwordField.style.display = 'none';
+                viewButton.style.display = 'inline-block';
+            } else {
+                passwordField.style.display = 'block';
+                viewButton.style.display = 'none';
+            }
         });
     </script>
 </body>
