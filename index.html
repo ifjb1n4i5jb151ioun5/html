@@ -35,7 +35,7 @@
                 <input type="checkbox" id="rememberPassword">
                 <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
             </div>
-            <button id="viewButton">Decrypt and Render</button>
+            <button id="viewButton" style="display: none;">Decrypt and Render</button>            
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="uploadIconConfigButton">Upload Config</button>
         </article>
@@ -193,16 +193,19 @@
         document.addEventListener("DOMContentLoaded", function () {
             const viewButton = document.getElementById('viewButton');
             const fileInput = document.getElementById('fileInput');
-            viewButton.classList.remove('glow');
+
+            viewButton.style.display = 'none';
+
             fileInput.addEventListener('change', function () {
                 if (fileInput.files.length > 0) {
+                    viewButton.style.display = 'inline-block';
                     viewButton.classList.add('glow');
                 } else {
+                    viewButton.style.display = 'none';
                     viewButton.classList.remove('glow');
                 }
             });
         });
-
         function handleIconConfigUpload(event) {
             const file = event.target.files[0];
             if (file) {
