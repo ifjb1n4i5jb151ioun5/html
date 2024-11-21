@@ -251,12 +251,7 @@
             iconConfigInput.type = 'file';
             iconConfigInput.style.display = 'none';
             uploadIconConfigButton.addEventListener('click', function () {
-                const password = passwordField.value;
-                if (password) {
-                    iconConfigInput.click();
-                } else {
-                    showAlert('Please enter a password before uploading the config.');
-                }
+                iconConfigInput.click();
             });
             iconConfigInput.addEventListener('change', handleIconConfigUpload);
             document.body.appendChild(iconConfigInput);
