@@ -121,8 +121,6 @@
 
             if (window.navigator.standalone) {
                 document.getElementById("uploadIconConfigButton").style.display = "none";
-                document.getElementById("questionMarkButton").style.display = "none";
-                document.getElementById("helpBox").style.display = "none";
                 rememberPasswordContainer.style.display = "block";
                 clearPasswordButton.style.display = "block";
             } else {
@@ -220,10 +218,6 @@
                 } else {
                     showAlert('Select file before decrypting');
                 }
-            });
-
-            document.getElementById('questionMarkButton').addEventListener('click', function () {
-                showAlert('Step 1: Upload config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
             });
 
             document.getElementById('clearPasswordButton').addEventListener('click', function () {
