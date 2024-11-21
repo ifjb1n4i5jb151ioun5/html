@@ -115,8 +115,14 @@
 
             updateRememberPasswordState();
 
+            // Initially hide password and apply config buttons
+            passwordButton.style.display = 'none';
+            applyConfigButton.style.display = 'none';
+
             if (window.navigator.standalone) {
                 document.getElementById("uploadIconConfigButton").style.display = "none";
+                document.getElementById("questionMarkButton").style.display = "none";
+                document.getElementById("helpBox").style.display = "none";
                 rememberPasswordContainer.style.display = "block";
                 clearPasswordButton.style.display = "block";
             } else {
@@ -128,8 +134,15 @@
 
             fileInput.addEventListener('change', function () {
                 if (fileInput.files.length > 0) {
+                    // Hide upload config button
+                    uploadIconConfigButton.style.display = 'none';
+
+                    // Show password button
                     passwordButton.style.display = 'inline-block';
-                    applyConfigButton.style.display = 'none';
+
+                    // Show apply config button
+                    applyConfigButton.style.display = 'inline-block';
+
                     viewButton.style.display = 'none';
                 } else {
                     passwordButton.style.display = 'none';
@@ -209,6 +222,10 @@
                 }
             });
 
+            document.getElementById('questionMarkButton').addEventListener('click', function () {
+                showAlert('Step 1: Upload config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
+            });
+
             document.getElementById('clearPasswordButton').addEventListener('click', function () {
                 clearSavedPassword();
                 showAlert('Saved password has been cleared.');
@@ -271,7 +288,7 @@
             }
 
             document.title = appTitle;
-        }        
+        }           
     </script>
 </body>
 
