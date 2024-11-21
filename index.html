@@ -104,14 +104,84 @@
             updateRememberPasswordState();
         }
 
-        window.onload = function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const fileInput = document.getElementById('fileInput');
+            const passwordButton = document.getElementById('passwordfieldButton');
+            const passwordField = document.getElementById('passwordField');
+            const applyConfigButton = document.getElementById('applyconfigbutton');
             const viewButton = document.getElementById('viewButton');
             const refreshNote = document.getElementById('refreshNote');
             const renderText = document.getElementById('renderText');
             const uploadFile = document.getElementById('uploadFile');
+            const rememberPasswordContainer = document.getElementById("rememberPasswordContainer");
+            const clearPasswordButton = document.getElementById("clearPasswordButton");
 
             updateRememberPasswordState();
+
+            if (window.navigator.standalone) {
+                document.getElementById("uploadIconConfigButton").style.display = "none";
+                document.getElementById("questionMarkButton").style.display = "none";
+                document.getElementById("helpBox").style.display = "none";
+                rememberPasswordContainer.style.display = "block";
+                clearPasswordButton.style.display = "block";
+            } else {
+                document.getElementById("fileInput").style.display = "none";
+                document.getElementById("viewButton").style.display = "none";
+                rememberPasswordContainer.style.display = "none";
+                clearPasswordButton.style.display = "none";
+            }
+
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files.length > 0) {
+                    passwordButton.style.display = 'inline-block';
+                    applyConfigButton.style.display = 'none';
+                    viewButton.style.display = 'none';
+                } else {
+                    passwordButton.style.display = 'none';
+                    applyConfigButton.style.display = 'none';
+                    viewButton.style.display = 'none';
+                }
+            });
+
+            passwordButton.addEventListener('click', function () {
+                passwordButton.style.display = 'none';
+                passwordField.style.display = 'block';
+                passwordField.focus();
+            });
+
+            passwordField.addEventListener('input', function () {
+                if (passwordField.value.trim() !== '') {
+                    applyConfigButton.style.display = 'inline-block';
+                } else {
+                    applyConfigButton.style.display = 'none';
+                }
+            });
+
+            applyConfigButton.addEventListener('click', function () {
+                const file = fileInput.files[0];
+                const password = passwordField.value;
+
+                if (file && password) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const encryptedContent = event.target.result;
+                        try {
+                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
+                            if (decrypted) {
+                                showAlert('Config applied successfully. Click "Decrypt and Render" to view.');
+                                viewButton.style.display = 'inline-block';
+                            } else {
+                                showAlert('Decryption failed. Incorrect password or invalid file format.');
+                            }
+                        } catch (error) {
+                            showAlert('Decryption error: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                } else {
+                    showAlert('Please select a file and enter a password.');
+                }
+            });
 
             viewButton.addEventListener('click', function () {
                 const file = fileInput.files[0];
@@ -119,7 +189,7 @@
                     const reader = new FileReader();
                     reader.onload = function (event) {
                         const encryptedContent = event.target.result;
-                        let passphrase = document.getElementById('passwordField').value;
+                        let passphrase = passwordField.value;
                         if (!passphrase) {
                             passphrase = getSavedPassword();
                         }
@@ -165,47 +235,31 @@
                     showAlert('Select file before decrypting');
                 }
             });
-        };
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const rememberPasswordContainer = document.getElementById("rememberPasswordContainer");
-            const clearPasswordButton = document.getElementById("clearPasswordButton");
+            document.getElementById('questionMarkButton').addEventListener('click', function () {
+                showAlert('Step 1: Upload config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
+            });
 
-            if (window.navigator.standalone) {
-                document.getElementById("uploadIconConfigButton").style.display = "none";
-                document.getElementById("questionMarkButton").style.display = "none";
-                document.getElementById("helpBox").style.display = "none";
-                rememberPasswordContainer.style.display = "block";
-                clearPasswordButton.style.display = "block";
-            } else {
-                document.getElementById("fileInput").style.display = "none";
-                document.getElementById("viewButton").style.display = "none";
-                rememberPasswordContainer.style.display = "none";
-                clearPasswordButton.style.display = "none";
-            }
+            document.getElementById('clearPasswordButton').addEventListener('click', function () {
+                clearSavedPassword();
+                showAlert('Saved password has been cleared.');
+            });
 
-            updateRememberPasswordState();
-        });
-
-        document.getElementById('questionMarkButton').addEventListener('click', function () {
-            showAlert('Step 1: Upload config<br>Step 2: Click the share button<br>Step 3: Add to homescreen<br> Step 4: Open the app');
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const viewButton = document.getElementById('viewButton');
-            const fileInput = document.getElementById('fileInput');
-
-            viewButton.style.display = 'none';
-
-            fileInput.addEventListener('change', function () {
-                if (fileInput.files.length > 0) {
-                    viewButton.style.display = 'inline-block';
-                    viewButton.classList.add('glow');
+            // Icon config upload functionality
+            const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
+            const iconConfigInput = document.createElement('input');
+            iconConfigInput.type = 'file';
+            iconConfigInput.style.display = 'none';
+            uploadIconConfigButton.addEventListener('click', function () {
+                const password = passwordField.value;
+                if (password) {
+                    iconConfigInput.click();
                 } else {
-                    viewButton.style.display = 'none';
-                    viewButton.classList.remove('glow');
+                    showAlert('Please enter a password before uploading the config.');
                 }
             });
+            iconConfigInput.addEventListener('change', handleIconConfigUpload);
+            document.body.appendChild(iconConfigInput);
         });
 
         function handleIconConfigUpload(event) {
@@ -255,48 +309,7 @@
                 newMeta.content = appTitle;
                 document.head.appendChild(newMeta);
             }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
-            const iconConfigInput = document.createElement('input');
-            iconConfigInput.type = 'file';
-            iconConfigInput.style.display = 'none';
-            uploadIconConfigButton.addEventListener('click', function () {
-                const password = document.getElementById('passwordField').value;
-                if (password) {
-                    iconConfigInput.click();
-                } else {
-                    showAlert('Please enter a password before uploading the config.');
-                }
-            });
-            iconConfigInput.addEventListener('change', handleIconConfigUpload);
-            document.body.appendChild(iconConfigInput);
-
-            document.getElementById('clearPasswordButton').addEventListener('click', function () {
-                clearSavedPassword();
-                showAlert('Saved password has been cleared.');
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const passwordButton = document.getElementById('passwordfieldButton');
-            const passwordField = document.getElementById('passwordField');
-
-            passwordButton.addEventListener('click', function () {
-                passwordButton.style.display = 'none';
-                passwordField.style.display = 'block';
-                passwordField.focus();
-            });
-
-            passwordField.addEventListener('keyup', function (event) {
-                if (event.key === 'Enter') {
-                    // Handle password submission here
-                    console.log('Password entered:', passwordField.value);
-                    // You can add your password handling logic here
-                }
-            });
-        });        
+        }        
     </script>
 </body>
 
