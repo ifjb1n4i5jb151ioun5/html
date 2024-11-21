@@ -289,44 +289,6 @@ header {
     }
 }
 
-/* Styles for help button */
-#questionMarkButton {
-    position: sticky;
-    bottom: 25px;
-    left: 25px;
-    background-color: #282828;
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Style for the help box */
-#helpBox {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    background-color: #282828;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Text next to the question mark button */
-#helpText {
-    position: sticky;
-    margin-left: 10px;
-    /* Space between button and text */
-    color: white;
-}
-
 #passwordField {
     background-color: #282828;
     color: white;
