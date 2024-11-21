@@ -346,8 +346,16 @@ header {
 #passwordField:focus {
     border: none;
     outline: none;
+    box-shadow: 0 0 15px #525f7a, 0 0 10px #525f7a;
+    transition: box-shadow 1s ease-in-out;
 }
 
 #passwordfieldButton {
     color: #8f8f8f;
+}
+
+#passwordfieldButton:focus {
+    outline: none;
+    box-shadow: 0 0 15px #525f7a, 0 0 10px #525f7a;
+    transition: box-shadow 0.3s ease-in-out;
 }
