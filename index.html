@@ -36,6 +36,7 @@
             </div>
             <button id="uploadIconConfigButton">Upload Config</button>
             <button id="passwordfieldButton">Enter Password...</button>
+            <button id="applyconfigbutton">Apply Config</button>
             <input type="password" id="passwordField" style="display: none;">
             <button id="viewButton" style="display: none;">Decrypt and Render</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
@@ -206,14 +207,14 @@
                 }
             });
         });
-        
+
         function handleIconConfigUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     const encryptedContent = e.target.result;
-                    const passphrase = prompt("Enter the password to decrypt the config file:");
+                    const passphrase = document.getElementById('passwordField').value;
                     if (passphrase) {
                         try {
                             const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
@@ -262,7 +263,12 @@
             iconConfigInput.type = 'file';
             iconConfigInput.style.display = 'none';
             uploadIconConfigButton.addEventListener('click', function () {
-                iconConfigInput.click();
+                const password = document.getElementById('passwordField').value;
+                if (password) {
+                    iconConfigInput.click();
+                } else {
+                    showAlert('Please enter a password before uploading the config.');
+                }
             });
             iconConfigInput.addEventListener('change', handleIconConfigUpload);
             document.body.appendChild(iconConfigInput);
@@ -290,7 +296,7 @@
                     // You can add your password handling logic here
                 }
             });
-        });
+        });        
     </script>
 </body>
 
