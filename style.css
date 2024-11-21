@@ -338,9 +338,16 @@ header {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    outline: none;
+    border: none;
+    box-shadow: 0 0 10px #3a4358, 0 0 8px #3a4358;
 }
 
-#passwordField {
-    box-shadow: 0 0 10px #525f7a, 0 0 8px #525f7a;
+#passwordField:focus {
+    border: none;
     outline: none;
+}
+
+#passwordfieldButton {
+    color: #8f8f8f;
 }
