@@ -115,6 +115,7 @@
             const uploadFile = document.getElementById('uploadFile');
             const rememberPasswordContainer = document.getElementById("rememberPasswordContainer");
             const clearPasswordButton = document.getElementById("clearPasswordButton");
+            const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
 
             updateRememberPasswordState();
 
@@ -158,29 +159,7 @@
             });
 
             applyConfigButton.addEventListener('click', function () {
-                const file = fileInput.files[0];
-                const password = passwordField.value;
-
-                if (file && password) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        const encryptedContent = event.target.result;
-                        try {
-                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
-                            if (decrypted) {
-                                showAlert('Config applied successfully. Click "Decrypt and Render" to view.');
-                                viewButton.style.display = 'inline-block';
-                            } else {
-                                showAlert('Decryption failed. Incorrect password or invalid file format.');
-                            }
-                        } catch (error) {
-                            showAlert('Decryption error: ' + error.message);
-                        }
-                    };
-                    reader.readAsText(file);
-                } else {
-                    showAlert('Please select a file and enter a password.');
-                }
+                processUploadedFile();
             });
 
             viewButton.addEventListener('click', function () {
@@ -245,43 +224,34 @@
                 showAlert('Saved password has been cleared.');
             });
 
-            // Icon config upload functionality
-            const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
-            const iconConfigInput = document.createElement('input');
-            iconConfigInput.type = 'file';
-            iconConfigInput.style.display = 'none';
             uploadIconConfigButton.addEventListener('click', function () {
-                iconConfigInput.click();
+                fileInput.click();
             });
-            iconConfigInput.addEventListener('change', handleIconConfigUpload);
-            document.body.appendChild(iconConfigInput);
         });
 
-        function handleIconConfigUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
+        function processUploadedFile() {
+            const file = fileInput.files[0];
+            const password = passwordField.value;
+
+            if (file && password) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    const encryptedContent = e.target.result;
-                    const passphrase = document.getElementById('passwordField').value;
-                    if (passphrase) {
-                        try {
-                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                            const [iconUrl, appTitle] = decrypted.split('\n');
-                            if (iconUrl && appTitle) {
-                                updateIconAndTitle(iconUrl, appTitle);
-                                showAlert('Icon and app title updated successfully.');
-                            } else {
-                                showAlert('Invalid icon config file format.');
-                            }
-                        } catch (error) {
-                            showAlert('Decryption error: ' + error.message);
+                reader.onload = function (event) {
+                    const encryptedContent = event.target.result;
+                    try {
+                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
+                        if (decrypted) {
+                            showAlert('Config applied successfully. Click "Decrypt and Render" to view.');
+                            document.getElementById('viewButton').style.display = 'inline-block';
+                        } else {
+                            showAlert('Decryption failed. Incorrect password or invalid file format.');
                         }
-                    } else {
-                        showAlert('Password is required for decryption.');
+                    } catch (error) {
+                        showAlert('Decryption error: ' + error.message);
                     }
                 };
                 reader.readAsText(file);
+            } else {
+                showAlert('Please select a file and enter a password.');
             }
         }
 
@@ -304,7 +274,7 @@
                 newMeta.content = appTitle;
                 document.head.appendChild(newMeta);
             }
-        }        
+        }            
     </script>
 </body>
 
