@@ -335,18 +335,12 @@ header {
     width: 200px;
     margin-top: 10px;
     outline: none;
-    transition: box-shadow 0.3s ease-in-out;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    border: 2px solid #525f7a;
 }
 
-#passwordField:focus {
+#passwordField {
     box-shadow: 0 0 10px #525f7a, 0 0 8px #525f7a;
     outline: none;
-}
-
-#passwordField:not(:focus) {
-    box-shadow: none;
 }
