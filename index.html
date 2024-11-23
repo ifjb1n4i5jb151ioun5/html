@@ -51,6 +51,7 @@
                 <strong><span id="renderText" aria-busy="true">Decrypting</span></strong>
             </article>
         </div>
+        <button id="uploadfilebutton">Upload File</button>
     </main>
     <dialog id="alertDialog">
         <article>
@@ -188,6 +189,7 @@
                 viewButton.style.display = "none";
                 rememberPasswordContainer.style.display = "none";
                 clearPasswordButton.style.display = "none";
+                uploadfilebutton.style.display = "none";
             }
 
             configFileInput.addEventListener('change', function () {
@@ -206,6 +208,9 @@
                     viewButton.style.display = 'inline-block';
                 } else {
                     viewButton.style.display = 'none';
+                    clearPasswordButton.style.display = 'none';
+                    rememberPasswordContainer.style.display = 'none';
+                    uploadfilebutton.style.display = 'inline-block';
                 }
             });
 
@@ -279,6 +284,10 @@
 
             uploadIconConfigButton.addEventListener('click', function () {
                 configFileInput.click();
+            });
+
+            uploadfilebutton.addEventListener('click', function () {
+                renderFileInput.click();
             });
         });          
     </script>
