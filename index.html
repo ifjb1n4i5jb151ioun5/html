@@ -132,16 +132,12 @@
 
             fileInput.addEventListener('change', function () {
                 if (fileInput.files.length > 0) {
-                    // Hide upload config button
                     uploadIconConfigButton.style.display = 'none';
 
-                    // Show password button
                     passwordButton.style.display = 'inline-block';
 
-                    // Show apply config button
-                    applyConfigButton.style.display = 'inline-block';
-
-                    viewButton.style.display = 'none';
+                    viewButton.style.display = 'inline-block';
+                    applyConfigButton.style.display = 'none';
                 } else {
                     passwordButton.style.display = 'none';
                     applyConfigButton.style.display = 'none';
