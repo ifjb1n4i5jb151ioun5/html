@@ -115,11 +115,6 @@
 
             updateRememberPasswordState();
 
-            document.getElementById('fileInput').addEventListener('change', function () {
-                document.getElementById('applyconfigbutton').style.display = 'none';
-                document.getElementById('viewButton').style.display = 'inline-block';
-            });
-
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
 
@@ -138,8 +133,8 @@
                 if (fileInput.files.length > 0) {
                     uploadIconConfigButton.style.display = 'none';
                     passwordButton.style.display = 'inline-block';
-                    applyConfigButton.style.display = 'inline-block';
-                    viewButton.style.display = 'none';
+                    applyConfigButton.style.display = 'none';
+                    viewButton.style.display = 'inline-block';
                 } else {
                     passwordButton.style.display = 'none';
                     applyConfigButton.style.display = 'none';
