@@ -120,7 +120,13 @@
                             const [iconUrl, appTitle] = decrypted.split('\n');
                             if (iconUrl && appTitle) {
                                 updateIconAndTitle(iconUrl, appTitle);
-                                showAlert('Icon and app title updated successfully.');
+                                const applyButton = document.getElementById('applyconfigbutton');
+                                applyButton.classList.add('button-success');
+                                applyButton.textContent = 'Success';
+                                setTimeout(() => {
+                                    applyButton.classList.remove('button-success');
+                                    applyButton.textContent = 'Apply Config';
+                                }, 2000);
                             } else {
                                 showAlert('Invalid icon config file format.');
                             }

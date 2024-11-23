@@ -328,7 +328,18 @@ header {
     margin-bottom: 10px;
 }
 
-#applyconfigbutton, #viewButton {
+#applyconfigbutton,
+#viewButton {
     display: block;
     margin-top: 5px;
+}
+
+.button-success {
+    background-color: #525f7a;
+    transition: background-color 0.5s ease;
+}
+
+.button-success::after {
+    content: '\2713';
+    margin-left: 5px;
 }
