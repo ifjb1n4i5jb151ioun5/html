@@ -148,16 +148,8 @@
                 passwordField.focus();
             });
 
-            passwordField.addEventListener('input', function () {
-                if (passwordField.value.trim() !== '') {
-                    applyConfigButton.style.display = 'inline-block';
-                } else {
-                    applyConfigButton.style.display = 'none';
-                }
-            });
-
             applyConfigButton.addEventListener('click', function () {
-                processUploadedFile();
+                processConfigFile();
             });
 
             viewButton.addEventListener('click', function () {
@@ -223,7 +215,7 @@
             });
         });
 
-        function processUploadedFile() {
+        function processConfigFile() {
             const file = fileInput.files[0];
             const password = document.getElementById('passwordField').value;
 
