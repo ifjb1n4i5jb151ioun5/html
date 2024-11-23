@@ -357,27 +357,3 @@ header {
 .button-success span {
     visibility: hidden;
 }
-
-input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #282828 inset;
-    -webkit-text-fill-color: white;
-}
-
-input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px #282828 inset;
-    -webkit-text-fill-color: white;
-}
-
-input[type="password"] {
-    background-color: #282828 !important;
-    color: white !important;
-    -webkit-text-fill-color: white !important;
-}
-
-input[type="password"]:-webkit-autofill,
-input[type="password"]:-webkit-autofill:hover,
-input[type="password"]:-webkit-autofill:focus,
-input[type="password"]:-webkit-autofill:active {
-    transition: background-color 5000s ease-in-out 0s;
-    -webkit-text-fill-color: white !important;
-}
