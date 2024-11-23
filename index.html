@@ -151,6 +151,14 @@
                 passwordField.focus();
             });
 
+            passwordField.addEventListener('input', function () {
+                if (passwordField.value.trim() !== '') {
+                    applyConfigButton.style.display = 'inline-block';
+                } else {
+                    applyConfigButton.style.display = 'none';
+                }
+            });
+
             applyConfigButton.addEventListener('click', function () {
                 processUploadedFile();
             });
