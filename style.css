@@ -334,6 +334,12 @@ header {
     margin-top: 5px;
 }
 
+#applyconfigbutton {
+    min-width: 100%; /* Adjust this value to match your button's original width */
+    position: relative;
+    overflow: hidden;
+}
+
 .button-success {
     background-color: #525f7a;
     transition: background-color 0.5s ease;
@@ -341,5 +347,13 @@ header {
 
 .button-success::after {
     content: '\2713';
-    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px; /* Adjust as needed */
+}
+
+.button-success span {
+    visibility: hidden;
 }
