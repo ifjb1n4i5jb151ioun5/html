@@ -115,7 +115,6 @@
 
             updateRememberPasswordState();
 
-            // Initially hide password and apply config buttons
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
 
@@ -133,11 +132,9 @@
             fileInput.addEventListener('change', function () {
                 if (fileInput.files.length > 0) {
                     uploadIconConfigButton.style.display = 'none';
-
                     passwordButton.style.display = 'inline-block';
-
-                    viewButton.style.display = 'inline-block';
-                    applyConfigButton.style.display = 'none';
+                    applyConfigButton.style.display = 'inline-block';
+                    viewButton.style.display = 'none';
                 } else {
                     passwordButton.style.display = 'none';
                     applyConfigButton.style.display = 'none';
