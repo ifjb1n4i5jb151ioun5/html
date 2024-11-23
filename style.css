@@ -321,3 +321,14 @@ header {
     box-shadow: 0 0 15px #525f7a, 0 0 10px #525f7a;
     transition: box-shadow 0.3s ease-in-out;
 }
+
+#configContainer input[type="file"],
+#renderContainer input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#applyconfigbutton, #viewButton {
+    display: block;
+    margin-top: 5px;
+}

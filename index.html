@@ -29,16 +29,21 @@
     <div id="fadeOverlay"></div>
     <main>
         <article id="uploadFile">
-            <input type="file" id="fileInput">
             <div id="rememberPasswordContainer" style="display: none;">
                 <input type="checkbox" id="rememberPassword">
                 <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
             </div>
+            <div id="configContainer">
+                <input type="file" id="configFileInput">
+                <button id="applyconfigbutton">Apply Config</button>
+            </div>
+            <div id="renderContainer">
+                <input type="file" id="renderFileInput">
+                <button id="viewButton" style="display: none;">Decrypt and Render</button>
+            </div>
             <button id="uploadIconConfigButton">Upload Config</button>
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
-            <button id="applyconfigbutton">Apply Config</button>
-            <button id="viewButton" style="display: none;">Decrypt and Render</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
         </article>
         <div id="refreshNote">
@@ -101,7 +106,8 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            const fileInput = document.getElementById('fileInput');
+            const configFileInput = document.getElementById('configFileInput');
+            const renderFileInput = document.getElementById('renderFileInput');
             const passwordButton = document.getElementById('passwordfieldButton');
             const passwordField = document.getElementById('passwordField');
             const applyConfigButton = document.getElementById('applyconfigbutton');
@@ -117,27 +123,34 @@
 
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
+            configFileInput.style.display = 'none';
 
-            if (window.navigator.standalone) {
+            if (window.navigator.standalone) { // Standalone Mode
                 document.getElementById("uploadIconConfigButton").style.display = "none";
                 rememberPasswordContainer.style.display = "block";
                 clearPasswordButton.style.display = "block";
-            } else { // Shown on first page when not in standalone
-                document.getElementById("fileInput").style.display = "none";
-                document.getElementById("viewButton").style.display = "none";
+            } else { // Regular Mode
+                renderFileInput.style.display = "none";
+                viewButton.style.display = "none";
                 rememberPasswordContainer.style.display = "none";
                 clearPasswordButton.style.display = "none";
             }
 
-            fileInput.addEventListener('change', function () {
-                if (fileInput.files.length > 0) {
+            configFileInput.addEventListener('change', function () {
+                if (configFileInput.files.length > 0) {
                     uploadIconConfigButton.style.display = 'none';
-                    passwordButton.style.display = 'inline-block';
-                    applyConfigButton.style.display = 'inline-block';
-                    viewButton.style.display = 'none';
-                } else {
-                    passwordButton.style.display = 'none';
                     applyConfigButton.style.display = 'none';
+                    passwordButton.style.display = 'block';
+                    applyConfigButton.style.display = 'block';
+                } else {
+                    applyConfigButton.style.display = 'block';
+                }
+            });
+
+            renderFileInput.addEventListener('change', function () {
+                if (renderFileInput.files.length > 0) {
+                    viewButton.style.display = 'block';
+                } else {
                     viewButton.style.display = 'none';
                 }
             });
@@ -211,7 +224,7 @@
             });
 
             uploadIconConfigButton.addEventListener('click', function () {
-                fileInput.click();
+                configFileInput.click();
             });
         });
 
