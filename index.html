@@ -30,7 +30,7 @@
     <main>
         <article id="uploadFile">
             <button id="passwordfieldButton">Enter Password...</button>
-            <input type="password" id="passwordField" style="display: none;">
+            <input type="password" id="passwordField" autocomplete="new-password" style="display: none;">
             <div id="configContainer">
                 <input type="file" id="configFileInput">
                 <button id="applyconfigbutton">Apply Config</button>
@@ -167,6 +167,13 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            const passwordField = document.getElementById('passwordField');
+            passwordField.addEventListener('focus', function () {
+                this.setAttribute('autocomplete', 'new-password');
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
             const configFileInput = document.getElementById('configFileInput');
             const renderFileInput = document.getElementById('renderFileInput');
             const passwordButton = document.getElementById('passwordfieldButton');
@@ -298,6 +305,7 @@
             uploadfilebutton.addEventListener('click', function () {
                 renderFileInput.click();
             });
+
         });          
     </script>
 </body>
