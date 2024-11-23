@@ -29,21 +29,21 @@
     <div id="fadeOverlay"></div>
     <main>
         <article id="uploadFile">
-            <div id="rememberPasswordContainer" style="display: none;">
-                <input type="checkbox" id="rememberPassword">
-                <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
-            </div>
+            <button id="passwordfieldButton">Enter Password...</button>
+            <input type="password" id="passwordField" style="display: none;">
             <div id="configContainer">
                 <input type="file" id="configFileInput">
                 <button id="applyconfigbutton">Apply Config</button>
+            </div>
+            <div id="rememberPasswordContainer" style="display: none;">
+                <input type="checkbox" id="rememberPassword">
+                <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
             </div>
             <div id="renderContainer">
                 <input type="file" id="renderFileInput">
                 <button id="viewButton" style="display: none;">Decrypt and Render</button>
             </div>
             <button id="uploadIconConfigButton">Upload Config</button>
-            <button id="passwordfieldButton">Enter Password...</button>
-            <input type="password" id="passwordField" style="display: none;">
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
         </article>
         <div id="refreshNote">
@@ -105,6 +105,60 @@
             updateRememberPasswordState();
         }
 
+        function processConfigFile() {
+            const file = configFileInput.files[0];
+            const password = document.getElementById('passwordField').value;
+
+            if (file && password) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const encryptedContent = event.target.result;
+                    try {
+                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
+                        if (decrypted) {
+                            const [iconUrl, appTitle] = decrypted.split('\n');
+                            if (iconUrl && appTitle) {
+                                updateIconAndTitle(iconUrl, appTitle);
+                                showAlert('Icon and app title updated successfully.');
+                            } else {
+                                showAlert('Invalid icon config file format.');
+                            }
+                        } else {
+                            showAlert('Decryption failed. Incorrect password or invalid file format.');
+                        }
+                    } catch (error) {
+                        showAlert('Decryption error: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                showAlert('Please select a file and enter a password.');
+            }
+        }
+
+        function updateIconAndTitle(iconUrl, appTitle) {
+            const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+            if (appleTouchIcon) {
+                appleTouchIcon.href = iconUrl;
+            } else {
+                const newLink = document.createElement('link');
+                newLink.rel = 'apple-touch-icon';
+                newLink.href = iconUrl;
+                document.head.appendChild(newLink);
+            }
+            const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+            if (appTitleMeta) {
+                appTitleMeta.content = appTitle;
+            } else {
+                const newMeta = document.createElement('meta');
+                newMeta.name = 'apple-mobile-web-app-title';
+                newMeta.content = appTitle;
+                document.head.appendChild(newMeta);
+            }
+
+            document.title = appTitle;
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             const configFileInput = document.getElementById('configFileInput');
             const renderFileInput = document.getElementById('renderFileInput');
@@ -140,16 +194,16 @@
                 if (configFileInput.files.length > 0) {
                     uploadIconConfigButton.style.display = 'none';
                     applyConfigButton.style.display = 'none';
-                    passwordButton.style.display = 'block';
-                    applyConfigButton.style.display = 'block';
+                    passwordButton.style.display = 'inline-block';
+                    applyConfigButton.style.display = 'inline-block';
                 } else {
-                    applyConfigButton.style.display = 'block';
+                    applyConfigButton.style.display = 'inline-block';
                 }
             });
 
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
-                    viewButton.style.display = 'block';
+                    viewButton.style.display = 'inline-block';
                 } else {
                     viewButton.style.display = 'none';
                 }
@@ -166,7 +220,7 @@
             });
 
             viewButton.addEventListener('click', function () {
-                const file = fileInput.files[0];
+                const file = renderFileInput.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function (event) {
@@ -226,61 +280,7 @@
             uploadIconConfigButton.addEventListener('click', function () {
                 configFileInput.click();
             });
-        });
-
-        function processConfigFile() {
-            const file = fileInput.files[0];
-            const password = document.getElementById('passwordField').value;
-
-            if (file && password) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const encryptedContent = event.target.result;
-                    try {
-                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
-                        if (decrypted) {
-                            const [iconUrl, appTitle] = decrypted.split('\n');
-                            if (iconUrl && appTitle) {
-                                updateIconAndTitle(iconUrl, appTitle);
-                                showAlert('Icon and app title updated successfully.');
-                            } else {
-                                showAlert('Invalid icon config file format.');
-                            }
-                        } else {
-                            showAlert('Decryption failed. Incorrect password or invalid file format.');
-                        }
-                    } catch (error) {
-                        showAlert('Decryption error: ' + error.message);
-                    }
-                };
-                reader.readAsText(file);
-            } else {
-                showAlert('Please select a file and enter a password.');
-            }
-        }
-
-        function updateIconAndTitle(iconUrl, appTitle) {
-            const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
-            if (appleTouchIcon) {
-                appleTouchIcon.href = iconUrl;
-            } else {
-                const newLink = document.createElement('link');
-                newLink.rel = 'apple-touch-icon';
-                newLink.href = iconUrl;
-                document.head.appendChild(newLink);
-            }
-            const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-            if (appTitleMeta) {
-                appTitleMeta.content = appTitle;
-            } else {
-                const newMeta = document.createElement('meta');
-                newMeta.name = 'apple-mobile-web-app-title';
-                newMeta.content = appTitle;
-                document.head.appendChild(newMeta);
-            }
-
-            document.title = appTitle;
-        }           
+        });          
     </script>
 </body>
 
