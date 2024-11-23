@@ -45,13 +45,13 @@
             </div>
             <button id="uploadIconConfigButton">Upload Config</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
+            <button id="uploadfilebutton">Upload File</button>
         </article>
         <div id="refreshNote">
             <article>
                 <strong><span id="renderText" aria-busy="true">Decrypting</span></strong>
             </article>
         </div>
-        <button id="uploadfilebutton">Upload File</button>
     </main>
     <dialog id="alertDialog">
         <article>
@@ -211,6 +211,7 @@
                     clearPasswordButton.style.display = 'none';
                     rememberPasswordContainer.style.display = 'none';
                     uploadfilebutton.style.display = 'inline-block';
+                    renderFileInput.style.display = 'none';
                 }
             });
 
