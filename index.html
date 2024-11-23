@@ -122,7 +122,7 @@
                                 updateIconAndTitle(iconUrl, appTitle);
                                 const applyButton = document.getElementById('applyconfigbutton');
                                 applyButton.classList.add('button-success');
-                                applyButton.textContent = 'Success';
+                                applyButton.textContent = '';
                                 setTimeout(() => {
                                     applyButton.classList.remove('button-success');
                                     applyButton.textContent = 'Apply Config';
@@ -142,7 +142,7 @@
                 showAlert('Please select a file and enter a password.');
             }
         }
-
+        
         function updateIconAndTitle(iconUrl, appTitle) {
             const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
             if (appleTouchIcon) {
