@@ -122,7 +122,7 @@
                 document.getElementById("uploadIconConfigButton").style.display = "none";
                 rememberPasswordContainer.style.display = "block";
                 clearPasswordButton.style.display = "block";
-            } else {
+            } else { // Shown on first page when not in standalone
                 document.getElementById("fileInput").style.display = "none";
                 document.getElementById("viewButton").style.display = "none";
                 rememberPasswordContainer.style.display = "none";
@@ -133,8 +133,8 @@
                 if (fileInput.files.length > 0) {
                     uploadIconConfigButton.style.display = 'none';
                     passwordButton.style.display = 'inline-block';
-                    applyConfigButton.style.display = 'none';
-                    viewButton.style.display = 'inline-block';
+                    applyConfigButton.style.display = 'inline-block';
+                    viewButton.style.display = 'none';
                 } else {
                     passwordButton.style.display = 'none';
                     applyConfigButton.style.display = 'none';
