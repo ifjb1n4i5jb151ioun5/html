@@ -115,6 +115,11 @@
 
             updateRememberPasswordState();
 
+            document.getElementById('fileInput').addEventListener('change', function () {
+                document.getElementById('applyconfigbutton').style.display = 'none';
+                document.getElementById('viewButton').style.display = 'block';
+            });
+
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
 
