@@ -357,3 +357,8 @@ header {
 .button-success span {
     visibility: hidden;
 }
+
+#passwordfieldButton, #applyconfigbutton {
+    min-width: 157px; /* adjust this value to your desired minimum width */
+    min-height: 40px; /* adjust this value to your desired minimum height */
+}
