@@ -127,7 +127,6 @@
                                 setTimeout(() => {
                                     applyButton.classList.remove('button-success');
                                     applyButton.textContent = 'Apply Config';
-                                    savePassword()
                                 }, 2000);
                             } else {
                                 showAlert('Invalid icon config file format.');
@@ -192,6 +191,7 @@
             applyConfigButton.style.display = 'none';
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
+            rememberedpasswordbutton.style.display = "none";
 
             if (window.navigator.standalone) { // Standalone Mode
                 document.getElementById("uploadIconConfigButton").style.display = "none";
@@ -203,7 +203,6 @@
                 rememberPasswordContainer.style.display = "none";
                 clearPasswordButton.style.display = "none";
                 uploadfilebutton.style.display = "none";
-                rememberedpasswordbutton.style.display = "none";
             }
 
             configFileInput.addEventListener('change', function () {
@@ -228,7 +227,6 @@
                     uploadFileButton.style.display = 'inline-block';
                     viewbutton.style.display = 'none';
                     renderFileInput.style.display = 'none';
-                    rememberedpasswordbutton.style.display = 'none';
                 }
             });
 
