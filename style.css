@@ -359,6 +359,6 @@ header {
 }
 
 #passwordfieldButton, #applyconfigbutton {
-    min-width: 157px; /* adjust this value to your desired minimum width */
+    min-width: 160px; /* adjust this value to your desired minimum width */
     min-height: 40px; /* adjust this value to your desired minimum height */
 }
