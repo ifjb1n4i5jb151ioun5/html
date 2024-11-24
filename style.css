@@ -358,7 +358,7 @@ header {
     visibility: hidden;
 }
 
-#passwordfieldButton, #applyconfigbutton {
-    min-width: 160px; /* adjust this value to your desired minimum width */
+#passwordfieldButton, #applyconfigbutton, #passwordField {
+    min-width: 200px; /* adjust this value to your desired minimum width */
     min-height: 40px; /* adjust this value to your desired minimum height */
 }
