@@ -32,7 +32,7 @@
             <button id="uploadfilebutton">Upload File</button>
             <div id="renderContainer">
                 <input type="file" id="renderFileInput">
-                <button id="viewButton" style="display: none;">Decrypt and Render</button>
+                <button id="viewbutton" style="display: none;">Decrypt and Render</button>
             </div>
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
@@ -172,7 +172,7 @@
             const passwordButton = document.getElementById('passwordfieldButton');
             const passwordField = document.getElementById('passwordField');
             const applyConfigButton = document.getElementById('applyconfigbutton');
-            const viewButton = document.getElementById('viewButton');
+            const viewbutton = document.getElementById('viewbutton');
             const refreshNote = document.getElementById('refreshNote');
             const renderText = document.getElementById('renderText');
             const uploadFile = document.getElementById('uploadFile');
@@ -192,11 +192,11 @@
 
             if (window.navigator.standalone) { // Standalone Mode
                 document.getElementById("uploadIconConfigButton").style.display = "none";
-                rememberPasswordContainer.style.display = "block";
-                clearPasswordButton.style.display = "block";
+                rememberPasswordContainer.style.display = "none";
+                clearPasswordButton.style.display = "none";
             } else { // Regular Mode
                 renderFileInput.style.display = "none";
-                viewButton.style.display = "none";
+                viewbutton.style.display = "none";
                 rememberPasswordContainer.style.display = "none";
                 clearPasswordButton.style.display = "none";
                 uploadfilebutton.style.display = "none";
@@ -216,16 +216,14 @@
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
                     passwordfieldButton.style.display = 'inline-block';
-                    viewButton.style.display = 'inline-block';
+                    viewbutton.style.display = 'inline-block';
                     rememberPasswordContainer.style.display = 'inline-block';
                     clearPasswordButton.style.display = 'inline-block';
                     uploadfilebutton.style.display = 'none';
                 } else {
                     uploadFileButton.style.display = 'inline-block';
-                    viewButton.style.display = 'none';
-                    clearPasswordButton.style.display = 'none';
+                    viewbutton.style.display = 'none';
                     renderFileInput.style.display = 'none';
-                    rememberPasswordContainer.style.display = 'none';
                 }
             });
 
@@ -239,7 +237,7 @@
                 processConfigFile();
             });
 
-            viewButton.addEventListener('click', function () {
+            viewbutton.addEventListener('click', function () {
                 const file = renderFileInput.files[0];
                 if (file) {
                     const reader = new FileReader();
