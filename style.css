@@ -362,3 +362,7 @@ header {
     min-width: 200px; /* adjust this value to your desired minimum width */
     min-height: 40px; /* adjust this value to your desired minimum height */
 }
+
+#rememberedpasswordbutton {
+    background-color: #525f7a;
+}

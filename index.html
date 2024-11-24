@@ -31,6 +31,7 @@
         <article id="uploadFile">
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
+            <button id="rememberedpasswordbutton">Saved Password</button>
             <button id="uploadfilebutton">Upload File</button>
             <div id="renderContainer">
                 <input type="file" id="renderFileInput">
@@ -126,6 +127,7 @@
                                 setTimeout(() => {
                                     applyButton.classList.remove('button-success');
                                     applyButton.textContent = 'Apply Config';
+                                    savePassword()
                                 }, 2000);
                             } else {
                                 showAlert('Invalid icon config file format.');
