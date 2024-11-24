@@ -74,6 +74,12 @@
             });
         }
 
+        function updateRememberedPasswordButtonVisibility() {
+            const rememberedPasswordButton = document.getElementById('rememberedpasswordbutton');
+            const savedPassword = getSavedPassword();
+            rememberedPasswordButton.style.display = savedPassword ? 'inline-block' : 'none';
+        }
+
         function updateRememberPasswordState() {
             const rememberPasswordCheckbox = document.getElementById('rememberPassword');
             const rememberPasswordText = document.getElementById('rememberPasswordText');
@@ -95,6 +101,7 @@
             if (document.getElementById('rememberPassword').checked && password) {
                 localStorage.setItem('decryptionPassword', password);
                 updateRememberPasswordState();
+                updateRememberedPasswordButtonVisibility();
             }
         }
 
@@ -105,8 +112,9 @@
         function clearSavedPassword() {
             localStorage.removeItem('decryptionPassword');
             updateRememberPasswordState();
+            updateRememberedPasswordButtonVisibility();
         }
-
+        
         function processConfigFile() {
             const file = configFileInput.files[0];
             const password = document.getElementById('passwordField').value;
@@ -184,6 +192,8 @@
             const rememberPasswordContainer = document.getElementById("rememberPasswordContainer");
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
+
+            updateRememberedPasswordButtonVisibility();
 
             updateRememberPasswordState();
 
