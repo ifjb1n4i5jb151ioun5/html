@@ -76,10 +76,12 @@
 
         function updateRememberedPasswordButtonVisibility() {
             const rememberedPasswordButton = document.getElementById('rememberedpasswordbutton');
+            const passwordfieldButton = document.getElementById('passwordfieldButton');
             const savedPassword = getSavedPassword();
             rememberedPasswordButton.style.display = savedPassword ? 'inline-block' : 'none';
+            passwordfieldButton.style.display = savedPassword ? 'none' : 'inline-block';
         }
-
+        
         function updateRememberPasswordState() {
             const rememberPasswordCheckbox = document.getElementById('rememberPassword');
             const rememberPasswordText = document.getElementById('rememberPasswordText');
@@ -114,7 +116,7 @@
             updateRememberPasswordState();
             updateRememberedPasswordButtonVisibility();
         }
-        
+
         function processConfigFile() {
             const file = configFileInput.files[0];
             const password = document.getElementById('passwordField').value;
