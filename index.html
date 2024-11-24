@@ -29,9 +29,13 @@
     <div id="fadeOverlay"></div>
     <main>
         <article id="uploadFile">
+            <button id="rememberedpasswordbutton">Password Saved</button>
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
-            <button id="rememberedpasswordbutton">Password Saved</button>
+            <div id="rememberPasswordContainer" style="display: none;">
+                <input type="checkbox" id="rememberPassword">
+                <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
+            </div>
             <button id="uploadfilebutton">Upload File</button>
             <div id="renderContainer">
                 <input type="file" id="renderFileInput">
@@ -40,10 +44,6 @@
             <div id="configContainer">
                 <input type="file" id="configFileInput">
                 <button id="applyconfigbutton">Apply Config</button>
-            </div>
-            <div id="rememberPasswordContainer" style="display: none;">
-                <input type="checkbox" id="rememberPassword">
-                <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
             </div>
             <button id="uploadIconConfigButton">Upload Config</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
