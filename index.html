@@ -29,6 +29,11 @@
     <div id="fadeOverlay"></div>
     <main>
         <article id="uploadFile">
+            <button id="uploadfilebutton">Upload File</button>
+            <div id="renderContainer">
+                <input type="file" id="renderFileInput">
+                <button id="viewButton" style="display: none;">Decrypt and Render</button>
+            </div>
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
             <div id="configContainer">
@@ -39,13 +44,8 @@
                 <input type="checkbox" id="rememberPassword">
                 <label id="rememberPasswordText" for="rememberPassword">Remember password</label>
             </div>
-            <div id="renderContainer">
-                <input type="file" id="renderFileInput">
-                <button id="viewButton" style="display: none;">Decrypt and Render</button>
-            </div>
             <button id="uploadIconConfigButton">Upload Config</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
-            <button id="uploadfilebutton">Upload File</button>
         </article>
         <div id="refreshNote">
             <article>
