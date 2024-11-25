@@ -71,12 +71,24 @@
             const uploadfilebutton = document.getElementById('uploadfilebutton');
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
             const rememberedpasswordbutton = document.getElementById('rememberedpasswordbutton');
+            const clearPasswordButton = document.getElementById('clearPasswordButton');
 
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
             rememberedpasswordbutton.style.display = "none";
+
+            const savedPassword = getSavedPassword();
+            if (savedPassword) {
+                passwordButton.style.display = 'none';
+                rememberedpasswordbutton.style.display = 'inline-block';
+                clearPasswordButton.style.display = 'inline-block';
+            } else {
+                passwordButton.style.display = 'inline-block';
+                rememberedpasswordbutton.style.display = 'none';
+                clearPasswordButton.style.display = 'none';
+            }
 
             if (window.navigator.standalone) { // Standalone Mode
                 uploadIconConfigButton.style.display = "none";
@@ -98,7 +110,7 @@
 
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
-                    passwordfieldButton.style.display = 'inline-block';
+                    passwordButton.style.display = 'inline-block';
                     viewbutton.style.display = 'inline-block';
                     uploadfilebutton.style.display = 'none';
                 } else {
@@ -127,6 +139,8 @@
                         let passphrase = passwordField.value;
                         if (!passphrase) {
                             passphrase = getSavedPassword();
+                        } else {
+                            savePassword(passphrase);
                         }
                         if (passphrase) {
                             try {
@@ -177,6 +191,7 @@
                 renderFileInput.click();
             });
 
+            clearPasswordButton.addEventListener('click', clearSavedPassword);
         });
 
         function showAlert(message) {
@@ -252,6 +267,21 @@
 
         function getSavedPassword() {
             return localStorage.getItem("decryptionPassword");
+        }
+
+        function savePassword(password) {
+            localStorage.setItem("decryptionPassword", password);
+            passwordButton.style.display = 'none';
+            rememberedpasswordbutton.style.display = 'inline-block';
+            clearPasswordButton.style.display = 'inline-block';
+        }
+
+        function clearSavedPassword() {
+            localStorage.removeItem("decryptionPassword");
+            passwordButton.style.display = 'inline-block';
+            rememberedpasswordbutton.style.display = 'none';
+            clearPasswordButton.style.display = 'none';
+            passwordField.value = '';
         }
 
     </script>
