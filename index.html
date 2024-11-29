@@ -171,7 +171,6 @@
             const uploadFileButton = document.getElementById('uploadfilebutton');
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
-            const rememberedpasswordbutton = document.getElementById('rememberedpasswordbutton');
 
             updateRememberPasswordState();
 
@@ -179,7 +178,6 @@
             applyConfigButton.style.display = 'none';
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
-            rememberedpasswordbutton.style.display = "none";
 
             if (window.navigator.standalone) { // Standalone Mode
                 document.getElementById("uploadIconConfigButton").style.display = "none";
