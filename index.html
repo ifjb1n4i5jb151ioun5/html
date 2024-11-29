@@ -75,27 +75,20 @@
         }
 
         function updateRememberPasswordState() {
-            const rememberPasswordCheckbox = document.getElementById('rememberPassword');
-            const rememberPasswordText = document.getElementById('rememberPasswordText');
             const savedPassword = getSavedPassword();
+            const rememberedpasswordbutton = document.getElementById('rememberedpasswordbutton');
 
             if (savedPassword) {
-                rememberPasswordCheckbox.checked = true;
-                rememberPasswordCheckbox.disabled = true;
-                rememberPasswordText.textContent = 'Password saved';
+                rememberedpasswordbutton.style.display = 'inline-block';
             } else {
-                rememberPasswordCheckbox.checked = false;
-                rememberPasswordCheckbox.disabled = false;
-                rememberPasswordText.textContent = 'Remember password';
+                rememberedpasswordbutton.style.display = 'none';
             }
         }
 
         function savePassword() {
             const password = document.getElementById('passwordField').value;
-            if (document.getElementById('rememberPassword').checked && password) {
                 localStorage.setItem('decryptionPassword', password);
                 updateRememberPasswordState();
-            }
         }
 
         function getSavedPassword() {
