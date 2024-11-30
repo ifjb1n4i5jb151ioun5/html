@@ -121,6 +121,7 @@ button {
     cursor: pointer;
     box-shadow: 0px 0px 10px rgba(82, 95, 122, 0.7);
     display: inline-block;
+    width: 100%;
 }
 
 /* Prevent scrolling on Safari iOS */
