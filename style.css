@@ -216,13 +216,11 @@ main {
     margin: 0 auto;
 }
 
-#passwordmanagement {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0 auto;
+#passwordmanagement article {
+    background-color: #282828 !important;
+    color: white !important;
+    padding: 15px;
+    border-radius: 8px;
 }
 
 /*Enter Password Field Button*/
