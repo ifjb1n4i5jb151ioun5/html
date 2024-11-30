@@ -73,16 +73,11 @@
         function updateRememberPasswordState() {
             const savedPassword = getSavedPassword();
             const rememberedpasswordbutton = document.getElementById('rememberedpasswordbutton');
-            const passwordfieldButton = document.getElementById('passwordfieldButton');
-            const clearpasswordButton = document.getElementById('clearPasswordButton');
 
             if (savedPassword) {
                 rememberedpasswordbutton.style.display = 'inline-block';
-                passwordfieldButton.style.display = 'none';
-                clearpasswordButton.style.display = 'inline-block';
             } else {
                 rememberedpasswordbutton.style.display = 'none';
-                clearpasswordButton.style.display = 'none';
             }
         }
 
