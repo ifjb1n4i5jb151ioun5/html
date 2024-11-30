@@ -18,11 +18,9 @@
 <body>
     <div id="fadeOverlay"></div>
     <main>
-        <article id="passwordmanagement">
+        <article id="uploadFile">
             <button id="rememberedpasswordbutton">Password Saved</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
-        </article>    
-        <article id="uploadFile">
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
             <button id="uploadfilebutton">Upload File</button>
@@ -66,16 +64,13 @@
             const rememberedpasswordbutton = document.getElementById('rememberedpasswordbutton');
             const passwordfieldButton = document.getElementById('passwordfieldButton');
             const clearPasswordButton = document.getElementById('clearPasswordButton');
-            const passwordmanagement = document.getElementById('passwordmanagement');
 
             if (savedPassword) {
                 rememberedpasswordbutton.style.display = 'inline-block';
                 passwordfieldButton.style.display = 'none';
-                passwordmanagement.style.display = 'block';
             } else {
                 rememberedpasswordbutton.style.display = 'none';
                 clearPasswordButton.style.display = 'none';
-                passwordmanagement.style.display = 'none';
             }
         }
 
@@ -169,7 +164,6 @@
             const uploadFileButton = document.getElementById('uploadfilebutton');
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
-            const passwordmanagement = document.getElementById('passwordmanagement');
 
             updateRememberPasswordState();
 
@@ -186,7 +180,6 @@
                 viewbutton.style.display = "none";
                 clearPasswordButton.style.display = "none";
                 uploadfilebutton.style.display = "none";
-                passwordmanagement.style.display = "none";
             }
 
             configFileInput.addEventListener('change', function () {
