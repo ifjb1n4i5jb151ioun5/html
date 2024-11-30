@@ -335,7 +335,7 @@ header {
 }
 
 #applyconfigbutton {
-    min-width: 100%; /* Adjust this value to match your button's original width */
+    min-width: 100%;
     position: relative;
     overflow: hidden;
 }
@@ -351,7 +351,7 @@ header {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 24px; /* Adjust as needed */
+    font-size: 24px;
 }
 
 .button-success span {
@@ -359,8 +359,8 @@ header {
 }
 
 #passwordfieldButton, #applyconfigbutton, #passwordField {
-    min-width: 200px; /* adjust this value to your desired minimum width */
-    min-height: 40px; /* adjust this value to your desired minimum height */
+    min-width: 200px;
+    min-height: 40px;
 }
 
 #rememberedpasswordbutton {
