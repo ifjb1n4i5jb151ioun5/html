@@ -365,17 +365,48 @@ header {
 
 #rememberedpasswordbutton {
     background-color: #525f7a;
-    display: flex;
 }
 
-#clearPasswordButton {
-    display: flex;
-}
-
-#passwordmanagement article {
+#passwordmanagement {
+    background-color: #282828;
+    padding: 40px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: 0 auto;
+}
+
+#passwordmanagement button {
+    margin: 10px 5px;
+    min-width: 200px;
+    min-height: 40px;
+}
+
+#rememberedpasswordbutton,
+#clearPasswordButton {
+    background-color: #282828;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0px 0px 10px rgba(82, 95, 122, 0.7);
+}
+
+#rememberedpasswordbutton {
+    background-color: #525f7a;
+}
+
+@media (max-width: 700px) {
+    #passwordmanagement {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #passwordmanagement button {
+        width: 100%;
+        max-width: 300px;
+        margin: 10px 0;
+    }
 }
