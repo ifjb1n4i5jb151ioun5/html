@@ -83,8 +83,8 @@
 
         function savePassword() {
             const password = document.getElementById('passwordField').value;
-            localStorage.setItem('decryptionPassword', password);
-            updateRememberPasswordState();
+                localStorage.setItem('decryptionPassword', password);
+                updateRememberPasswordState();
         }
 
         function getSavedPassword() {
@@ -156,60 +156,6 @@
             document.title = appTitle;
         }
 
-        function loadFile() {
-            const file = renderFileInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const encryptedContent = event.target.result;
-                    decryptAndRender(encryptedContent, file.name);
-                };
-                reader.readAsText(file);
-            } else {
-                showAlert('Select file before decrypting');
-            }
-        }
-
-        function decryptAndRender(encryptedContent, fileName) {
-            let passphrase = passwordField.value || getSavedPassword();
-            if (passphrase) {
-                try {
-                    renderText.textContent = `Decrypting "${fileName}"`;
-                    uploadFile.style.display = 'none';
-                    refreshNote.style.display = 'block';
-                    setTimeout(function () {
-                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                        if (decrypted) {
-                            renderText.textContent = `Rendering "${fileName}"`;
-                            savePassword();
-                            setTimeout(function () {
-                                document.open();
-                                document.write(decrypted);
-                                document.close();
-                                window.addEventListener('load', function () {
-                                    console.log('New page fully loaded');
-                                });
-                            }, 2000);
-                        } else {
-                            showAlert('Decryption failed. Incorrect password or invalid file format.');
-                            uploadFile.style.display = 'block';
-                            refreshNote.style.display = 'none';
-                            clearSavedPassword();
-                        }
-                    }, 2000);
-                } catch (error) {
-                    showAlert('Decryption error: ' + error.message);
-                    uploadFile.style.display = 'block';
-                    refreshNote.style.display = 'none';
-                    clearSavedPassword();
-                }
-            } else {
-                showAlert('Password is required for decryption.');
-                uploadFile.style.display = 'block';
-                refreshNote.style.display = 'none';
-            }
-        }
-
         document.addEventListener("DOMContentLoaded", function () {
             const configFileInput = document.getElementById('configFileInput');
             const renderFileInput = document.getElementById('renderFileInput');
@@ -277,7 +223,58 @@
                 processConfigFile();
             });
 
-            viewbutton.addEventListener('click', loadFile);
+            viewbutton.addEventListener('click', function () {
+                const file = renderFileInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const encryptedContent = event.target.result;
+                        let passphrase = passwordField.value;
+                        if (!passphrase) {
+                            passphrase = getSavedPassword();
+                        }
+                        if (passphrase) {
+                            try {
+                                renderText.textContent = `Decrypting "${file.name}"`;
+                                uploadFile.style.display = 'none';
+                                refreshNote.style.display = 'block';
+                                setTimeout(function () {
+                                    const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                                    if (decrypted) {
+                                        renderText.textContent = `Rendering "${file.name}"`;
+                                        savePassword();
+                                        setTimeout(function () {
+                                            document.open();
+                                            document.write(decrypted);
+                                            document.close();
+                                            window.addEventListener('load', function () {
+                                                console.log('New page fully loaded');
+                                            });
+                                        }, 2000);
+                                    } else {
+                                        showAlert('Decryption failed. Incorrect password or invalid file format.');
+                                        uploadFile.style.display = 'block';
+                                        refreshNote.style.display = 'none';
+                                        clearSavedPassword();
+                                    }
+                                }, 2000);
+                            } catch (error) {
+                                showAlert('Decryption error: ' + error.message);
+                                uploadFile.style.display = 'block';
+                                refreshNote.style.display = 'none';
+                                clearSavedPassword();
+                            }
+                        } else {
+                            showAlert('Password is required for decryption.');
+                            uploadFile.style.display = 'block';
+                            refreshNote.style.display = 'none';
+                        }
+                    };
+                    reader.readAsText(file);
+                } else {
+                    showAlert('Select file before decrypting');
+                }
+            });
 
             document.getElementById('clearPasswordButton').addEventListener('click', function () {
                 clearSavedPassword();
@@ -291,7 +288,7 @@
             uploadfilebutton.addEventListener('click', function () {
                 renderFileInput.click();
             });
-        });         
+        });          
     </script>
 </body>
 
