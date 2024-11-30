@@ -216,6 +216,15 @@ main {
     margin: 0 auto;
 }
 
+#passwordmanagement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
 /*Enter Password Field Button*/
 #passwordfieldButton {
     background-color: #282828;
