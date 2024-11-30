@@ -73,11 +73,15 @@
         function updateRememberPasswordState() {
             const savedPassword = getSavedPassword();
             const rememberedpasswordbutton = document.getElementById('rememberedpasswordbutton');
+            const passwordfieldButton = document.getElementById('passwordfieldButton');
+            const clearPasswordButton = document.getElementById('clearPasswordButton');
 
             if (savedPassword) {
                 rememberedpasswordbutton.style.display = 'inline-block';
+                passwordfieldButton.style.display = 'none';
             } else {
                 rememberedpasswordbutton.style.display = 'none';
+                clearPasswordButton.style.display = 'none';
             }
         }
 
@@ -206,6 +210,7 @@
                     viewbutton.style.display = 'inline-block';
                     clearPasswordButton.style.display = 'inline-block';
                     uploadfilebutton.style.display = 'none';
+                    updateRememberPasswordState();
                 } else {
                     uploadFileButton.style.display = 'inline-block';
                     viewbutton.style.display = 'none';
