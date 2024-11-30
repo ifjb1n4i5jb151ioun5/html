@@ -369,7 +369,7 @@ header {
 
 #passwordmanagement {
     background-color: #282828;
-    padding: 40px;
+    padding: 10px;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
