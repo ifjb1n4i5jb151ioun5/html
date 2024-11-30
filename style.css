@@ -216,14 +216,6 @@ main {
     margin: 0 auto;
 }
 
-#passwordmanagement article {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-}
-
 /*Enter Password Field Button*/
 #passwordfieldButton {
     background-color: #282828;
@@ -373,4 +365,17 @@ header {
 
 #rememberedpasswordbutton {
     background-color: #525f7a;
+    display: flex;
+}
+
+#clearPasswordButton {
+    display: flex;
+}
+
+#passwordmanagement article {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
 }
