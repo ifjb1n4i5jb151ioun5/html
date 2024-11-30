@@ -120,6 +120,7 @@ button {
     border-radius: 8px;
     cursor: pointer;
     box-shadow: 0px 0px 10px rgba(82, 95, 122, 0.7);
+    display: inline-block;
 }
 
 /* Prevent scrolling on Safari iOS */
@@ -356,11 +357,6 @@ header {
 
 .button-success span {
     visibility: hidden;
-}
-
-#passwordfieldButton, #applyconfigbutton, #passwordField {
-    min-width: 200px;
-    min-height: 40px;
 }
 
 #rememberedpasswordbutton {
