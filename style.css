@@ -378,8 +378,6 @@ header {
 
 #passwordmanagement button {
     margin: 10px 5px;
-    min-width: 200px;
-    min-height: 40px;
 }
 
 #rememberedpasswordbutton,
