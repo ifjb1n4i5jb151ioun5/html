@@ -48,7 +48,6 @@
             <article>
                 <strong><span id="renderText" aria-busy="true">Decrypting</span></strong>
             </article>
-            <div id="divIds"></div>
         </div>
     </main>
     <dialog id="alertDialog">
@@ -88,8 +87,8 @@
 
         function savePassword() {
             const password = document.getElementById('passwordField').value;
-            localStorage.setItem('decryptionPassword', password);
-            updateRememberPasswordState();
+                localStorage.setItem('decryptionPassword', password);
+                updateRememberPasswordState();
         }
 
         function getSavedPassword() {
@@ -255,11 +254,6 @@
                                             document.close();
                                             window.addEventListener('load', function () {
                                                 console.log('New page fully loaded');
-                                                // Extract and display div IDs
-                                                const divs = document.getElementsByTagName('div');
-                                                const divIds = Array.from(divs).map(div => div.id).filter(id => id).reverse();
-                                                const divIdsContainer = document.getElementById('divIds');
-                                                divIdsContainer.innerHTML = divIds.map(id => `<p>${id}</p>`).join('');
                                             });
                                         }, 2000);
                                     } else {
@@ -286,7 +280,7 @@
                     showAlert('Select file before decrypting');
                 }
             });
-            
+
             document.getElementById('clearPasswordButton').addEventListener('click', function () {
                 clearSavedPassword();
                 showAlert('Saved password has been cleared.');
