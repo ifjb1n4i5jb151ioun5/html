@@ -77,8 +77,8 @@
 
         function savePassword() {
             const password = document.getElementById('passwordField').value;
-                localStorage.setItem('decryptionPassword', password);
-                updateRememberPasswordState();
+            localStorage.setItem('decryptionPassword', password);
+            updateRememberPasswordState();
         }
 
         function getSavedPassword() {
@@ -201,6 +201,7 @@
                     clearPasswordButton.style.display = 'inline-block';
                     uploadfilebutton.style.display = 'none';
                     updateRememberPasswordState();
+                    fillPasswordField();
                 } else {
                     uploadFileButton.style.display = 'inline-block';
                     viewbutton.style.display = 'none';
@@ -218,7 +219,15 @@
                 processConfigFile();
             });
 
+            function fillPasswordField() {
+                const savedPassword = getSavedPassword();
+                if (savedPassword) {
+                    document.getElementById('passwordField').value = savedPassword;
+                }
+            }
+
             viewbutton.addEventListener('click', function () {
+                fillPasswordField();
                 const file = renderFileInput.files[0];
                 if (file) {
                     const reader = new FileReader();
