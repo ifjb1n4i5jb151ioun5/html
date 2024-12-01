@@ -54,7 +54,7 @@
             const database = {};
             for (let i = 1; i < lines.length; i++) {
                 const [id, hash, status] = lines[i].split(',');
-                database[hash] = parseInt(status);
+                database[hash.trim()] = parseInt(status);
             }
             return database;
         }
@@ -177,10 +177,12 @@
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
 
-            fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/html/refs/heads/main/database.csv')
+            // Load the database
+            fetch('path/to/your/database.csv')
                 .then(response => response.text())
                 .then(csvContent => {
                     database = loadDatabase(csvContent);
+                    console.log('Database loaded:', database);
                 })
                 .catch(error => {
                     console.error('Error loading database:', error);
@@ -253,19 +255,20 @@
                     const reader = new FileReader();
                     reader.onload = function (event) {
                         const encryptedContent = event.target.result;
-                        let passphrase = passwordField.value;
-                        if (!passphrase) {
-                            passphrase = getSavedPassword();
-                        }
+                        let passphrase = passwordField.value || getSavedPassword();
+
                         if (passphrase) {
                             try {
                                 renderText.textContent = `Decrypting "${file.name}"`;
                                 uploadFile.style.display = 'none';
                                 refreshNote.style.display = 'block';
+
                                 setTimeout(function () {
                                     const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
                                     if (decrypted) {
+                                        // Use SHA-512 for hashing
                                         const hash = CryptoJS.SHA512(decrypted).toString();
+                                        console.log('Calculated hash:', hash);
 
                                         if (database[hash] === 1) {
                                             renderText.textContent = `Rendering "${file.name}"`;
@@ -279,7 +282,7 @@
                                                 });
                                             }, 2000);
                                         } else {
-                                            showAlert('Incorrect file. Unable to render.');
+                                            showAlert('Incorrect file or file not in database. Unable to render.');
                                             uploadFile.style.display = 'block';
                                             refreshNote.style.display = 'none';
                                         }
@@ -320,7 +323,7 @@
             uploadfilebutton.addEventListener('click', function () {
                 renderFileInput.click();
             });
-        });        
+        });             
     </script>
 </body>
 
