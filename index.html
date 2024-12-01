@@ -265,7 +265,7 @@
                                 setTimeout(function () {
                                     const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
                                     if (decrypted) {
-                                        const hash = CryptoJS.SHA256(decrypted).toString();
+                                        const hash = CryptoJS.SHA512(decrypted).toString();
 
                                         if (database[hash] === 1) {
                                             renderText.textContent = `Rendering "${file.name}"`;
