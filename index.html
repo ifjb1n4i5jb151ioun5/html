@@ -178,7 +178,7 @@
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
 
             // Load the database
-            fetch('path/to/your/database.csv')
+            fetch('database.csv')
                 .then(response => response.text())
                 .then(csvContent => {
                     database = loadDatabase(csvContent);
