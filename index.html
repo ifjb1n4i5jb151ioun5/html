@@ -178,7 +178,7 @@
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
 
             // Load the database
-            fetch('database.csv')
+            fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/html/refs/heads/main/database.csv')
                 .then(response => response.text())
                 .then(csvContent => {
                     database = loadDatabase(csvContent);
