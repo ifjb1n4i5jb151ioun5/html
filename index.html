@@ -56,13 +56,13 @@
                 .map(b => b.toString(16).padStart(2, '0'))
                 .join('');
 
-            if (!data.hashes.includes(hashHex)) {
+            const isHashAllowed = data.hashes.some(item => item.hash === hashHex);
+            if (!isHashAllowed) {
                 throw new Error('File hash not in allowed list');
             }
 
             return fileContent;
         }
-
         async function renderAllowedFile(fileContent) {
             try {
                 const content = await checkFileHash(fileContent);
