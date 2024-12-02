@@ -1,5 +1,5 @@
 {
-    "allowed_files": [
+    "hashes": [
         {
             "number": 1,
             "hash": "sha256-hash-of-file-1"
