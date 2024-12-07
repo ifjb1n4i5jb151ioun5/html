@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="pico.css">
     <link rel="stylesheet" href="style.css">
     <script src="crypto.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-sha3@0.9.3/src/sha3.js"></script>
 </head>
 
 <body>
@@ -149,6 +150,34 @@
             document.title = appTitle;
         }
 
+        function loadAllowedHashes() {
+            const allowedHashesFile = 'allowedHashes.txt';
+            fetch(allowedHashesFile)
+                .then(response => response.text())
+                .then(data => {
+                    const allowedHashes = data.split('\n').map(hash => hash.trim());
+                    return allowedHashes;
+                })
+                .then(allowedHashes => {
+                    window.allowedHashes = allowedHashes;
+                })
+                .catch(error => {
+                    console.error('Error loading allowed hashes:', error);
+                });
+        }
+
+        function calculateSHA3Hash(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const fileContent = event.target.result;
+                    const hash = SHA3.sha3_256(fileContent);
+                    resolve(hash);
+                };
+                reader.readAsText(file);
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             const configFileInput = document.getElementById('configFileInput');
             const renderFileInput = document.getElementById('renderFileInput');
@@ -225,55 +254,62 @@
                 }
             }
 
-            viewbutton.addEventListener('click', function () {
+            viewbutton.addEventListener('click', async function () {
                 fillPasswordField();
                 const file = renderFileInput.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        const encryptedContent = event.target.result;
-                        let passphrase = passwordField.value;
-                        if (!passphrase) {
-                            passphrase = getSavedPassword();
-                        }
-                        if (passphrase) {
-                            try {
-                                renderText.textContent = `Decrypting "${file.name}"`;
-                                uploadFile.style.display = 'none';
-                                refreshNote.style.display = 'block';
-                                setTimeout(function () {
-                                    const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                                    if (decrypted) {
-                                        renderText.textContent = `Rendering "${file.name}"`;
-                                        savePassword();
-                                        setTimeout(function () {
-                                            document.open();
-                                            document.write(decrypted);
-                                            document.close();
-                                            window.addEventListener('load', function () {
-                                                console.log('New page fully loaded');
-                                            });
-                                        }, 2000);
-                                    } else {
-                                        showAlert('Decryption failed. Incorrect password or invalid file format.');
-                                        uploadFile.style.display = 'block';
-                                        refreshNote.style.display = 'none';
-                                        clearSavedPassword();
-                                    }
-                                }, 2000);
-                            } catch (error) {
-                                showAlert('Decryption error: ' + error.message);
+                    const hash = await calculateSHA3Hash(file);
+                    if (window.allowedHashes && window.allowedHashes.includes(hash)) {
+                        const reader = new FileReader();
+                        reader.onload = function (event) {
+                            const encryptedContent = event.target.result;
+                            let passphrase = passwordField.value;
+                            if (!passphrase) {
+                                passphrase = getSavedPassword();
+                            }
+                            if (passphrase) {
+                                try {
+                                    renderText.textContent = `Decrypting "${file.name}"`;
+                                    uploadFile.style.display = 'none';
+                                    refreshNote.style.display = 'block';
+                                    setTimeout(function () {
+                                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                                        if (decrypted) {
+                                            renderText.textContent = `Rendering "${file.name}"`;
+                                            savePassword();
+                                            setTimeout(function () {
+                                                document.open();
+                                                document.write(decrypted);
+                                                document.close();
+                                                window.addEventListener('load', function () {
+                                                    console.log('New page fully loaded');
+                                                });
+                                            }, 2000);
+                                        } else {
+                                            showAlert('Decryption failed. Incorrect password or invalid file format.');
+                                            uploadFile.style.display = 'block';
+                                            refreshNote.style.display = 'none';
+                                            clearSavedPassword();
+                                        }
+                                    }, 2000);
+                                } catch (error) {
+                                    showAlert('Decryption error: ' + error.message);
+                                    uploadFile.style.display = 'block';
+                                    refreshNote.style.display = 'none';
+                                    clearSavedPassword();
+                                }
+                            } else {
+                                showAlert('Password is required for decryption.');
                                 uploadFile.style.display = 'block';
                                 refreshNote.style.display = 'none';
-                                clearSavedPassword();
                             }
-                        } else {
-                            showAlert('Password is required for decryption.');
-                            uploadFile.style.display = 'block';
-                            refreshNote.style.display = 'none';
-                        }
-                    };
-                    reader.readAsText(file);
+                        };
+                        reader.readAsText(file);
+                    } else {
+                        showAlert('File is not allowed.');
+                        uploadFile.style.display = 'block';
+                        refreshNote.style.display = 'none';
+                    }
                 } else {
                     showAlert('Select file before decrypting');
                 }
@@ -291,7 +327,9 @@
             uploadfilebutton.addEventListener('click', function () {
                 renderFileInput.click();
             });
-        });          
+
+            loadAllowedHashes();
+        });
     </script>
 </body>
 
