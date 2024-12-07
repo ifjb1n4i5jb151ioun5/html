@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="pico.css">
     <link rel="stylesheet" href="style.css">
     <script src="crypto.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-sha3@0.9.3/src/sha3.js"></script>
 </head>
 
 <body>
@@ -225,13 +226,21 @@
                 }
             }
 
-            viewbutton.addEventListener('click', function () {
+            viewbutton.addEventListener('click', async function () {
                 fillPasswordField();
                 const file = renderFileInput.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (event) {
+                    reader.onload = async function (event) {
                         const encryptedContent = event.target.result;
+                        const fileHash = sha3_256(encryptedContent);
+                        const allowedHashes = await loadAllowedHashes();
+
+                        if (!allowedHashes.includes(fileHash)) {
+                            showAlert('File hash not in allowed list.');
+                            return;
+                        }
+
                         let passphrase = passwordField.value;
                         if (!passphrase) {
                             passphrase = getSavedPassword();
@@ -278,6 +287,16 @@
                     showAlert('Select file before decrypting');
                 }
             });
+
+            function loadAllowedHashes() {
+                return fetch('allowed_hashes.txt')
+                    .then(response => response.text())
+                    .then(text => text.split('\n').filter(hash => hash.trim() !== ''))
+                    .catch(error => {
+                        console.error('Error loading allowed hashes:', error);
+                        return [];
+                    });
+            }
 
             document.getElementById('clearPasswordButton').addEventListener('click', function () {
                 clearSavedPassword();
