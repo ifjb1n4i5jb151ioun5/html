@@ -150,6 +150,19 @@
             document.title = appTitle;
         }
 
+        // Updated loadAllowedHashes function
+        function loadAllowedHashes() {
+            return fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt')
+                .then(response => response.text())
+                .then(text => {
+                    return text.split('\n').filter(hash => hash.trim() !== '');
+                })
+                .catch(error => {
+                    console.error('Error loading allowed hashes:', error);
+                    return []; // Return an empty array on error
+                });
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             const configFileInput = document.getElementById('configFileInput');
             const renderFileInput = document.getElementById('renderFileInput');
@@ -161,8 +174,6 @@
             const renderText = document.getElementById('renderText');
             const uploadFile = document.getElementById('uploadFile');
             const uploadfilebutton = document.getElementById('uploadfilebutton');
-            const passwordfieldButton = document.getElementById('passwordfieldButton');
-            const uploadFileButton = document.getElementById('uploadfilebutton');
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
 
@@ -174,7 +185,7 @@
             renderFileInput.style.display = 'none';
 
             if (window.navigator.standalone) { // Standalone Mode
-                document.getElementById("uploadIconConfigButton").style.display = "none";
+                uploadIconConfigButton.style.display = "none";
                 clearPasswordButton.style.display = "none";
             } else { // Regular Mode
                 renderFileInput.style.display = "none";
@@ -186,9 +197,8 @@
             configFileInput.addEventListener('change', function () {
                 if (configFileInput.files.length > 0) {
                     uploadIconConfigButton.style.display = 'none';
-                    applyConfigButton.style.display = 'none';
-                    passwordButton.style.display = 'inline-block';
                     applyConfigButton.style.display = 'inline-block';
+                    passwordButton.style.display = 'inline-block';
                 } else {
                     applyConfigButton.style.display = 'inline-block';
                 }
@@ -222,7 +232,7 @@
             function fillPasswordField() {
                 const savedPassword = getSavedPassword();
                 if (savedPassword) {
-                    document.getElementById('passwordField').value = savedPassword;
+                    passwordField.value = savedPassword;
                 }
             }
 
@@ -236,71 +246,66 @@
                         const fileHash = sha3_256(encryptedContent);
                         const allowedHashes = await loadAllowedHashes();
 
-                        if (!allowedHashes.includes(fileHash)) {
-                            showAlert('File hash not in allowed list.');
+                        if (allowedHashes.length > 0) { // Check if hashes were loaded successfully
+                            if (!allowedHashes.includes(fileHash)) {
+                                showAlert('File hash not in allowed list.');
+                                return;
+                            } else {
+                                showAlert('Loading hashes succeeded!'); // Show success alert
+                            }
+                        } else {
+                            showAlert('Failed to load allowed hashes.');
                             return;
                         }
 
-                        let passphrase = passwordField.value;
-                        if (!passphrase) {
-                            passphrase = getSavedPassword();
-                        }
+                        let passphrase = passwordField.value || getSavedPassword();
                         if (passphrase) {
                             try {
                                 renderText.textContent = `Decrypting "${file.name}"`;
                                 uploadFile.style.display = 'none';
                                 refreshNote.style.display = 'block';
                                 setTimeout(function () {
-                                    const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
+                                    const decrypted =
+                                        CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
                                     if (decrypted) {
-                                        renderText.textContent = `Rendering "${file.name}"`;
+                                        renderText.textContent =
+                                            `Rendering "${file.name}"`;
                                         savePassword();
                                         setTimeout(function () {
                                             document.open();
                                             document.write(decrypted);
                                             document.close();
-                                            window.addEventListener('load', function () {
-                                                console.log('New page fully loaded');
-                                            });
                                         }, 2000);
                                     } else {
-                                        showAlert('Decryption failed. Incorrect password or invalid file format.');
-                                        uploadFile.style.display = 'block';
-                                        refreshNote.style.display = 'none';
-                                        clearSavedPassword();
+                                        showAlert(
+                                            'Decryption failed. Incorrect password or invalid file format.'
+                                        );
                                     }
                                 }, 2000);
                             } catch (error) {
-                                showAlert('Decryption error: ' + error.message);
-                                uploadFile.style.display = 'block';
-                                refreshNote.style.display = 'none';
-                                clearSavedPassword();
+                                showAlert(
+                                    'Decryption error: ' + error.message
+                                );
                             }
                         } else {
-                            showAlert('Password is required for decryption.');
-                            uploadFile.style.display = 'block';
-                            refreshNote.style.display = 'none';
+                            showAlert(
+                                'Password is required for decryption.'
+                            );
                         }
                     };
                     reader.readAsText(file);
                 } else {
-                    showAlert('Select file before decrypting');
+                    showAlert(
+                        'Select file before decrypting'
+                    );
                 }
             });
 
-            function loadAllowedHashes() {
-                return fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt')
-                    .then(response => response.text())
-                    .then(text => text.split('\n').filter(hash => hash.trim() !== ''))
-                    .catch(error => {
-                        console.error('Error loading allowed hashes:', error);
-                        return [];
-                    });
-            }
-
-            document.getElementById('clearPasswordButton').addEventListener('click', function () {
+            clearPasswordButton.addEventListener('click', function () {
                 clearSavedPassword();
-                showAlert('Saved password has been cleared.');
+                showAlert(
+                    'Saved password has been cleared.'
+                );
             });
 
             uploadIconConfigButton.addEventListener('click', function () {
@@ -310,7 +315,7 @@
             uploadfilebutton.addEventListener('click', function () {
                 renderFileInput.click();
             });
-        });          
+        });
     </script>
 </body>
 
