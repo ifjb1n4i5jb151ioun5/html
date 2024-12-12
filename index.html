@@ -289,7 +289,7 @@
             });
 
             function loadAllowedHashes() {
-                return fetch('allowed-hashes.txt')
+                return fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt')
                     .then(response => response.text())
                     .then(text => text.split('\n').filter(hash => hash.trim() !== ''))
                     .catch(error => {
