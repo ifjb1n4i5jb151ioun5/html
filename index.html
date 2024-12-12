@@ -237,7 +237,7 @@
                         const allowedHashes = await loadAllowedHashes();
 
                         if (!allowedHashes.includes(fileHash)) {
-                            showAlert('File hash not in allowed list. File hash: ${fileHash}');
+                            showAlert(`File hash not in allowed list. File hash: ${fileHash}`);
                             return;
                         }
 
