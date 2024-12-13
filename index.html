@@ -230,7 +230,7 @@
                     const reader = new FileReader();
                     reader.onload = async function (event) {
                         const fileContent = event.target.result; // Get the file content directly
-                        const fileHash = sha256(fileContent); // Compute SHA-256 hash of the file content
+                        const fileHash = sha3_256(fileContent); // Compute sha3_256 hash of the file content
 
                         // Load allowed hashes and check if the computed hash is allowed
                         const allowedHashes = await loadAllowedHashes();
