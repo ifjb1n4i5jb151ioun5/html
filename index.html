@@ -75,10 +75,6 @@
             }
         }
 
-        function sha256(password) {
-            return CryptoJS.SHA256(password).toString();
-        }
-
         function savePassword() {
             const password = document.getElementById('passwordField').value;
             localStorage.setItem('decryptionPassword', password);
