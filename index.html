@@ -90,64 +90,32 @@
             updateRememberPasswordState();
         }
 
-        function processConfigFile() {
-            const file = configFileInput.files[0];
-            const password = document.getElementById('passwordField').value;
-
-            if (file && password) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const encryptedContent = event.target.result;
-                    try {
-                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
-                        if (decrypted) {
-                            const [iconUrl, appTitle] = decrypted.split('\n');
-                            if (iconUrl && appTitle) {
-                                updateIconAndTitle(iconUrl, appTitle);
-                                const applyButton = document.getElementById('applyconfigbutton');
-                                applyButton.classList.add('button-success');
-                                applyButton.innerHTML = '<span>Apply Config</span>';
-                                setTimeout(() => {
-                                    applyButton.classList.remove('button-success');
-                                    applyButton.textContent = 'Apply Config';
-                                }, 2000);
-                            } else {
-                                showAlert('Invalid icon config file format.');
-                            }
-                        } else {
-                            showAlert('Decryption failed. Incorrect password or invalid file format.');
-                        }
-                    } catch (error) {
-                        showAlert('Decryption error: ' + error.message);
-                    }
-                };
-                reader.readAsText(file);
-            } else {
-                showAlert('Please select a file and enter a password.');
-            }
+        async function computeFileHash(file) {
+            const hashBuffer = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
         }
 
-        function updateIconAndTitle(iconUrl, appTitle) {
-            const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
-            if (appleTouchIcon) {
-                appleTouchIcon.href = iconUrl;
-            } else {
-                const newLink = document.createElement('link');
-                newLink.rel = 'apple-touch-icon';
-                newLink.href = iconUrl;
-                document.head.appendChild(newLink);
-            }
-            const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
-            if (appTitleMeta) {
-                appTitleMeta.content = appTitle;
-            } else {
-                const newMeta = document.createElement('meta');
-                newMeta.name = 'apple-mobile-web-app-title';
-                newMeta.content = appTitle;
-                document.head.appendChild(newMeta);
+        async function loadAllowedHashes() {
+            return fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt')
+                .then(response => response.text())
+                .then(text => text.split('\n').filter(hash => hash.trim() !== ''))
+                .catch(error => {
+                    console.error('Error loading allowed hashes:', error);
+                    return [];
+                });
+        }
+
+        function decryptFile(encryptedContent, key) {
+            const decryptedData = new Uint8Array(encryptedContent.length);
+
+            // Simple XOR decryption (same as encryption)
+            for (let i = 0; i < encryptedContent.length; i++) {
+                decryptedData[i] = encryptedContent[i] ^ key.charCodeAt(i % key.length);
             }
 
-            document.title = appTitle;
+            return new TextDecoder().decode(decryptedData);
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -201,7 +169,7 @@
                     updateRememberPasswordState();
                     fillPasswordField();
                 } else {
-                    uploadFileButton.style.display = 'inline-block';
+                    uploadfilebutton.style.display = 'inline-block';
                     viewbutton.style.display = 'none';
                     renderFileInput.style.display = 'none';
                 }
@@ -224,53 +192,46 @@
                 }
             }
 
-            function decryptFile(encryptedContent, key) {
-                const decryptedData = new Uint8Array(encryptedContent.length);
-
-                // Simple XOR decryption (same as encryption)
-                for (let i = 0; i < encryptedContent.length; i++) {
-                    decryptedData[i] = encryptedContent[i] ^ key.charCodeAt(i % key.length);
-                }
-
-                return new TextDecoder().decode(decryptedData);
-            }
-
-            document.getElementById('viewbutton').addEventListener('click', function () {
+            viewbutton.addEventListener('click', async function () {
                 const fileInput = document.getElementById('renderFileInput');
-                const passwordField = document.getElementById('passwordField');
+                const passwordFieldValue = passwordField.value;
 
-                if (fileInput.files.length > 0 && passwordField.value) {
-                    const reader = new FileReader();
+                if (fileInput.files.length > 0 && passwordFieldValue) {
+                    const file = fileInput.files[0];
 
-                    reader.onload = function (event) {
-                        const encryptedContent = new Uint8Array(event.target.result);
-                        const key = passwordField.value; // Get the entered password
+                    // Compute the hash of the uploaded file
+                    const computedHash = await computeFileHash(file);
+                    console.log("Computed Hash:", computedHash);
 
-                        const decryptedContent = decryptFile(encryptedContent, key);
+                    // Fetch allowed hashes
+                    const allowedHashes = await loadAllowedHashes();
 
-                        // Render or use decrypted content as needed
-                        document.open();
-                        document.write(decryptedContent);
-                        document.close();
+                    // Check if the computed hash is in the allowed hashes
+                    if (allowedHashes.includes(computedHash)) {
+                        const reader = new FileReader();
 
-                        console.log("File decrypted and rendered.");
-                    };
+                        reader.onload = function (event) {
+                            const encryptedContent = new Uint8Array(event.target.result);
+                            const decryptedContent = decryptFile(encryptedContent, passwordFieldValue);
 
-                    reader.readAsArrayBuffer(fileInput.files[0]);
+                            // Render or use decrypted content as needed
+                            document.open();
+                            document.write(decryptedContent);
+                            document.close();
+
+                            console.log("File decrypted and rendered.");
+                        };
+
+                        reader.readAsArrayBuffer(file); // Read as ArrayBuffer for decryption
+                    } else {
+                        showAlert(`File hash is not allowed: ${computedHash}`); // Notify user
+                    }
                 } else {
-                    alert('Please select a file and enter a password.');
+                    showAlert('Please select a file and enter a password.');
                 }
             });
-            function loadAllowedHashes() {
-                return fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt')
-                    .then(response => response.text())
-                    .then(text => text.split('\n').filter(hash => hash.trim() !== ''))
-                    .catch(error => {
-                        console.error('Error loading allowed hashes:', error);
-                        return [];
-                    });
-            }
 
+            // Clear saved password functionality
             document.getElementById('clearPasswordButton').addEventListener('click', function () {
                 clearSavedPassword();
                 showAlert('Saved password has been cleared.');
@@ -285,6 +246,7 @@
             });
         });          
     </script>
+
 </body>
 
 </html>
