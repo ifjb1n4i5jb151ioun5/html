@@ -234,31 +234,38 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = async function (event) {
-                        const encryptedContentBytesArrayBuffer = event.target.result;
-                        let encryptedContentArrayBuffer = new Uint8Array(encryptedContentBytesArrayBuffer);
+                        const base64String = event.target.result;
+                        const encryptedContentBytesArrayBuffer = Uint8Array.from(atob(base64String), c => c.charCodeAt(0));
 
                         // Extract IV (first 16 bytes)
-                        let iv = CryptoJS.lib.WordArray.create(encryptedContentArrayBuffer.slice(0, 16));
+                        let ivBytesArrayBuffer = encryptedContentBytesArrayBuffer.slice(0, 16);
+                        let ivWordArray = CryptoJS.lib.WordArray.create(ivBytesArrayBuffer);
+
                         // Extract Ciphertext (rest of data)
-                        let ciphertext = CryptoJS.lib.WordArray.create(encryptedContentArrayBuffer.slice(16));
+                        let ciphertextBytesArrayBuffer = encryptedContentBytesArrayBuffer.slice(16);
+                        let ciphertextWordArray = CryptoJS.lib.WordArray.create(ciphertextBytesArrayBuffer);
 
                         let passphrase = passwordField.value || getSavedPassword();
                         if (passphrase) {
                             try {
                                 renderText.textContent = `Decrypting "${file.name}"`;
-
                                 // Derive key from password using SHA-256
-                                const derivedKey = sha256(passphrase);
+                                const derivedKeyHexString = sha256(passphrase);
 
                                 // Decrypt using extracted IV and ciphertext
-                                let decrypted = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, derivedKey, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Utf8);
+                                let decryptedDataUtf8String =
+                                    CryptoJS.AES.decrypt(
+                                        { ciphertext: ciphertextWordArray },
+                                        derivedKeyHexString,
+                                        { iv: ivWordArray, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
+                                    ).toString(CryptoJS.enc.Utf8);
 
-                                if (decrypted) {
+                                if (decryptedDataUtf8String) {
                                     renderText.textContent = `Rendering "${file.name}"`;
                                     savePassword();
                                     setTimeout(function () {
                                         document.open();
-                                        document.write(decrypted);
+                                        document.write(decryptedDataUtf8String);
                                         document.close();
                                     }, 2000);
                                 } else {
@@ -271,7 +278,7 @@
                             showAlert('Password is required for decryption.');
                         }
                     };
-                    reader.readAsArrayBuffer(file); // Read as ArrayBuffer for binary data
+                    reader.readAsText(file); // Read as text for Base64 encoding
                 } else {
                     showAlert('Select file before decrypting');
                 }
