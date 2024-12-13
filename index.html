@@ -246,7 +246,7 @@
                                 document.close();
                             }, 2000);
                         } else {
-                            showAlert('File hash is not allowed.'); // Alert if hash is not in allowed hashes
+                            showAlert(`File hash is not allowed: ${fileHash}`); // Show the generated hash in the alert
                         }
                     };
                     reader.readAsText(file); // Read as text for direct rendering
