@@ -75,6 +75,10 @@
             }
         }
 
+        function sha256(password) {
+            return CryptoJS.SHA256(password).toString();
+        }
+
         function savePassword() {
             const password = document.getElementById('passwordField').value;
             localStorage.setItem('decryptionPassword', password);
@@ -230,25 +234,24 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = async function (event) {
-                        // Read encrypted content
                         const encryptedContentBytesArrayBuffer = event.target.result;
-                        // Create a Uint8Array from the ArrayBuffer
                         let encryptedContentArrayBuffer = new Uint8Array(encryptedContentBytesArrayBuffer);
 
-                        // Convert to WordArray for CryptoJS
-                        let encryptedWordArray = CryptoJS.lib.WordArray.create(encryptedContentArrayBuffer);
-
                         // Extract IV (first 16 bytes)
-                        let iv = CryptoJS.lib.WordArray.create(encryptedWordArray.words.slice(0, 4)); // Assuming 4 words for 16 bytes
+                        let iv = CryptoJS.lib.WordArray.create(encryptedContentArrayBuffer.slice(0, 16));
                         // Extract Ciphertext (rest of data)
-                        let ciphertext = CryptoJS.lib.WordArray.create(encryptedWordArray.words.slice(4));
+                        let ciphertext = CryptoJS.lib.WordArray.create(encryptedContentArrayBuffer.slice(16));
 
                         let passphrase = passwordField.value || getSavedPassword();
                         if (passphrase) {
                             try {
                                 renderText.textContent = `Decrypting "${file.name}"`;
+
+                                // Derive key from password using SHA-256
+                                const derivedKey = sha256(passphrase);
+
                                 // Decrypt using extracted IV and ciphertext
-                                let decrypted = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, passphrase, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Utf8);
+                                let decrypted = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, derivedKey, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Utf8);
 
                                 if (decrypted) {
                                     renderText.textContent = `Rendering "${file.name}"`;
@@ -257,26 +260,15 @@
                                         document.open();
                                         document.write(decrypted);
                                         document.close();
-                                        window.addEventListener('load', function () {
-                                            console.log('New page fully loaded');
-                                        });
                                     }, 2000);
                                 } else {
                                     showAlert('Decryption failed. Incorrect password or invalid file format.');
-                                    uploadFile.style.display = 'block';
-                                    refreshNote.style.display = 'none';
-                                    clearSavedPassword();
                                 }
                             } catch (error) {
                                 showAlert('Decryption error: ' + error.message);
-                                uploadFile.style.display = 'block';
-                                refreshNote.style.display = 'none';
-                                clearSavedPassword();
                             }
                         } else {
                             showAlert('Password is required for decryption.');
-                            uploadFile.style.display = 'block';
-                            refreshNote.style.display = 'none';
                         }
                     };
                     reader.readAsArrayBuffer(file); // Read as ArrayBuffer for binary data
