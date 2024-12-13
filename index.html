@@ -224,33 +224,43 @@
                 }
             }
 
-            viewbutton.addEventListener('click', async function () {
-                const file = renderFileInput.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = async function (event) {
-                        const fileContent = event.target.result; // Get the file content directly
-                        const fileHash = sha3_256(fileContent); // Compute sha3_256 hash of the file content
+            function decryptFile(encryptedContent, key) {
+                const decryptedData = new Uint8Array(encryptedContent.length);
 
-                        // Load allowed hashes and check if the computed hash is allowed
-                        const allowedHashes = await loadAllowedHashes();
-                        if (allowedHashes.includes(fileHash)) {
-                            renderText.textContent = `Rendering "${file.name}"`;
-                            setTimeout(function () {
-                                document.open();
-                                document.write(fileContent); // Write the content directly to the document
-                                document.close();
-                            }, 2000);
-                        } else {
-                            showAlert(`File hash is not allowed: ${fileHash}`); // Show the generated hash in the alert
-                        }
+                // Simple XOR decryption (same as encryption)
+                for (let i = 0; i < encryptedContent.length; i++) {
+                    decryptedData[i] = encryptedContent[i] ^ key.charCodeAt(i % key.length);
+                }
+
+                return new TextDecoder().decode(decryptedData);
+            }
+
+            document.getElementById('viewbutton').addEventListener('click', function () {
+                const fileInput = document.getElementById('renderFileInput');
+                const passwordField = document.getElementById('passwordField');
+
+                if (fileInput.files.length > 0 && passwordField.value) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (event) {
+                        const encryptedContent = new Uint8Array(event.target.result);
+                        const key = passwordField.value; // Get the entered password
+
+                        const decryptedContent = decryptFile(encryptedContent, key);
+
+                        // Render or use decrypted content as needed
+                        document.open();
+                        document.write(decryptedContent);
+                        document.close();
+
+                        console.log("File decrypted and rendered.");
                     };
-                    reader.readAsText(file); // Read as text for direct rendering
+
+                    reader.readAsArrayBuffer(fileInput.files[0]);
                 } else {
-                    showAlert('Select a file before rendering');
+                    alert('Please select a file and enter a password.');
                 }
             });
-
             function loadAllowedHashes() {
                 return fetch('https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt')
                     .then(response => response.text())
