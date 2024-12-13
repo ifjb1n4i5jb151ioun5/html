@@ -179,6 +179,43 @@
                 passwordField.focus();
             });
 
+            function processConfigFile() {
+            const file = configFileInput.files[0];
+            const password = document.getElementById('passwordField').value;
+
+            if (file && password) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const encryptedContent = event.target.result;
+                    try {
+                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
+                        if (decrypted) {
+                            const [iconUrl, appTitle] = decrypted.split('\n');
+                            if (iconUrl && appTitle) {
+                                updateIconAndTitle(iconUrl, appTitle);
+                                const applyButton = document.getElementById('applyconfigbutton');
+                                applyButton.classList.add('button-success');
+                                applyButton.innerHTML = '<span>Apply Config</span>';
+                                setTimeout(() => {
+                                    applyButton.classList.remove('button-success');
+                                    applyButton.textContent = 'Apply Config';
+                                }, 2000);
+                            } else {
+                                showAlert('Invalid icon config file format.');
+                            }
+                        } else {
+                            showAlert('Decryption failed. Incorrect password or invalid file format.');
+                        }
+                    } catch (error) {
+                        showAlert('Decryption error: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                showAlert('Please select a file and enter a password.');
+            }
+        }
+
             applyConfigButton.addEventListener('click', function () {
                 processConfigFile();
             });
