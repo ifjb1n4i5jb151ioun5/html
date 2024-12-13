@@ -180,41 +180,65 @@
             });
 
             function processConfigFile() {
-            const file = configFileInput.files[0];
-            const password = document.getElementById('passwordField').value;
+                const file = configFileInput.files[0];
+                const password = document.getElementById('passwordField').value;
 
-            if (file && password) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const encryptedContent = event.target.result;
-                    try {
-                        const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
-                        if (decrypted) {
-                            const [iconUrl, appTitle] = decrypted.split('\n');
-                            if (iconUrl && appTitle) {
-                                updateIconAndTitle(iconUrl, appTitle);
-                                const applyButton = document.getElementById('applyconfigbutton');
-                                applyButton.classList.add('button-success');
-                                applyButton.innerHTML = '<span>Apply Config</span>';
-                                setTimeout(() => {
-                                    applyButton.classList.remove('button-success');
-                                    applyButton.textContent = 'Apply Config';
-                                }, 2000);
+                if (file && password) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const encryptedContent = event.target.result;
+                        try {
+                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
+                            if (decrypted) {
+                                const [iconUrl, appTitle] = decrypted.split('\n');
+                                if (iconUrl && appTitle) {
+                                    updateIconAndTitle(iconUrl, appTitle);
+                                    const applyButton = document.getElementById('applyconfigbutton');
+                                    applyButton.classList.add('button-success');
+                                    applyButton.innerHTML = '<span>Apply Config</span>';
+                                    setTimeout(() => {
+                                        applyButton.classList.remove('button-success');
+                                        applyButton.textContent = 'Apply Config';
+                                    }, 2000);
+                                } else {
+                                    showAlert('Invalid icon config file format.');
+                                }
                             } else {
-                                showAlert('Invalid icon config file format.');
+                                showAlert('Decryption failed. Incorrect password or invalid file format.');
                             }
-                        } else {
-                            showAlert('Decryption failed. Incorrect password or invalid file format.');
+                        } catch (error) {
+                            showAlert('Decryption error: ' + error.message);
                         }
-                    } catch (error) {
-                        showAlert('Decryption error: ' + error.message);
-                    }
-                };
-                reader.readAsText(file);
-            } else {
-                showAlert('Please select a file and enter a password.');
+                    };
+                    reader.readAsText(file);
+                } else {
+                    showAlert('Please select a file and enter a password.');
+                }
             }
-        }
+            
+            function updateIconAndTitle(iconUrl, appTitle) {
+                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                if (appleTouchIcon) {
+                    appleTouchIcon.href = iconUrl;
+                } else {
+                    const newLink = document.createElement('link');
+                    newLink.rel = 'apple-touch-icon';
+                    newLink.href = iconUrl;
+                    document.head.appendChild(newLink);
+                }
+                const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+                if (appTitleMeta) {
+                    appTitleMeta.content = appTitle;
+                } else {
+                    const newMeta = document.createElement('meta');
+                    newMeta.name = 'apple-mobile-web-app-title';
+                    newMeta.content = appTitle;
+                    document.head.appendChild(newMeta);
+                }
+
+                document.title = appTitle;
+            }
+
 
             applyConfigButton.addEventListener('click', function () {
                 processConfigFile();
