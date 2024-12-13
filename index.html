@@ -91,10 +91,8 @@
         }
 
         async function computeFileHash(file) {
-            const hashBuffer = await crypto.subtle.digest('sha3_256', await file.arrayBuffer());
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex;
+            const fileContent = await file.text(); // Read file content as text
+            return sha3_256(fileContent); // Compute SHA3-256 hash directly
         }
 
         async function loadAllowedHashes() {
