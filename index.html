@@ -161,8 +161,6 @@
             const renderText = document.getElementById('renderText');
             const uploadFile = document.getElementById('uploadFile');
             const uploadfilebutton = document.getElementById('uploadfilebutton');
-            const passwordfieldButton = document.getElementById('passwordfieldButton');
-            const uploadFileButton = document.getElementById('uploadfilebutton');
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
 
@@ -174,7 +172,7 @@
             renderFileInput.style.display = 'none';
 
             if (window.navigator.standalone) { // Standalone Mode
-                document.getElementById("uploadIconConfigButton").style.display = "none";
+                uploadIconConfigButton.style.display = "none";
                 clearPasswordButton.style.display = "none";
             } else { // Regular Mode
                 renderFileInput.style.display = "none";
@@ -232,44 +230,43 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = async function (event) {
-                        const encryptedContent = event.target.result;
-                        const fileHash = sha3_256(encryptedContent);
-                        const allowedHashes = await loadAllowedHashes();
+                        // Read encrypted content
+                        const encryptedContentBytesArrayBuffer = event.target.result;
+                        // Create a Uint8Array from the ArrayBuffer
+                        let encryptedContentArrayBuffer = new Uint8Array(encryptedContentBytesArrayBuffer);
 
-                        if (!allowedHashes.includes(fileHash)) {
-                            showAlert(`File hash not in allowed list. File hash: ${fileHash}`);
-                            return;
-                        }
+                        // Convert to WordArray for CryptoJS
+                        let encryptedWordArray = CryptoJS.lib.WordArray.create(encryptedContentArrayBuffer);
 
-                        let passphrase = passwordField.value;
-                        if (!passphrase) {
-                            passphrase = getSavedPassword();
-                        }
+                        // Extract IV (first 16 bytes)
+                        let iv = CryptoJS.lib.WordArray.create(encryptedWordArray.words.slice(0, 4)); // Assuming 4 words for 16 bytes
+                        // Extract Ciphertext (rest of data)
+                        let ciphertext = CryptoJS.lib.WordArray.create(encryptedWordArray.words.slice(4));
+
+                        let passphrase = passwordField.value || getSavedPassword();
                         if (passphrase) {
                             try {
                                 renderText.textContent = `Decrypting "${file.name}"`;
-                                uploadFile.style.display = 'none';
-                                refreshNote.style.display = 'block';
-                                setTimeout(function () {
-                                    const decrypted = CryptoJS.AES.decrypt(encryptedContent, passphrase).toString(CryptoJS.enc.Utf8);
-                                    if (decrypted) {
-                                        renderText.textContent = `Rendering "${file.name}"`;
-                                        savePassword();
-                                        setTimeout(function () {
-                                            document.open();
-                                            document.write(decrypted);
-                                            document.close();
-                                            window.addEventListener('load', function () {
-                                                console.log('New page fully loaded');
-                                            });
-                                        }, 2000);
-                                    } else {
-                                        showAlert('Decryption failed. Incorrect password or invalid file format.');
-                                        uploadFile.style.display = 'block';
-                                        refreshNote.style.display = 'none';
-                                        clearSavedPassword();
-                                    }
-                                }, 2000);
+                                // Decrypt using extracted IV and ciphertext
+                                let decrypted = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, passphrase, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString(CryptoJS.enc.Utf8);
+
+                                if (decrypted) {
+                                    renderText.textContent = `Rendering "${file.name}"`;
+                                    savePassword();
+                                    setTimeout(function () {
+                                        document.open();
+                                        document.write(decrypted);
+                                        document.close();
+                                        window.addEventListener('load', function () {
+                                            console.log('New page fully loaded');
+                                        });
+                                    }, 2000);
+                                } else {
+                                    showAlert('Decryption failed. Incorrect password or invalid file format.');
+                                    uploadFile.style.display = 'block';
+                                    refreshNote.style.display = 'none';
+                                    clearSavedPassword();
+                                }
                             } catch (error) {
                                 showAlert('Decryption error: ' + error.message);
                                 uploadFile.style.display = 'block';
@@ -282,7 +279,7 @@
                             refreshNote.style.display = 'none';
                         }
                     };
-                    reader.readAsText(file);
+                    reader.readAsArrayBuffer(file); // Read as ArrayBuffer for binary data
                 } else {
                     showAlert('Select file before decrypting');
                 }
