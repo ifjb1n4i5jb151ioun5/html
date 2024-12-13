@@ -91,7 +91,7 @@
         }
 
         async function computeFileHash(file) {
-            const hashBuffer = await crypto.subtle.digest('SHA3-256', await file.arrayBuffer());
+            const hashBuffer = await crypto.subtle.digest('sha3_256', await file.arrayBuffer());
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             return hashHex;
