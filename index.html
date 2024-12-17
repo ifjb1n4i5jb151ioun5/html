@@ -166,7 +166,7 @@
                     applyConfigButton.style.display = 'inline-block';
                 }
             });
-            
+
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
                     passwordfieldButton.style.display = 'inline-block';
@@ -261,64 +261,64 @@
             }
 
             viewbutton.addEventListener('click', async function () {
-    const fileInput = document.getElementById('renderFileInput');
-    const passwordFieldValue = passwordField.value;
+                const fileInput = document.getElementById('renderFileInput');
+                const passwordFieldValue = passwordField.value;
 
-    // Check if a file is selected and if the password field is empty
-    if (fileInput.files.length > 0) {
-        if (passwordFieldValue === "") {
-            // If no password is entered, render the file unencrypted
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                const content = event.target.result;
-                // Render the content directly without decryption
-                document.open();
-                document.write(content);
-                document.close();
-                console.log("File rendered without decryption.");
-            };
-            reader.readAsText(file); // Read as text for rendering
-        } else {
-            // Existing logic for when a password is provided
-            const file = fileInput.files[0];
+                // Check if a file is selected and if the password field is empty
+                if (fileInput.files.length > 0) {
+                    if (passwordFieldValue === "") {
+                        // If no password is entered, render the file unencrypted
+                        const reader = new FileReader();
+                        reader.onload = function (event) {
+                            const content = event.target.result;
+                            // Render the content directly without decryption
+                            document.open();
+                            document.write(content);
+                            document.close();
+                            console.log("File rendered without decryption.");
+                        };
+                        reader.readAsText(file); // Read as text for rendering
+                    } else {
+                        // Existing logic for when a password is provided
+                        const file = fileInput.files[0];
 
-            try {
-                // Compute the hash of the uploaded file
-                const computedHash = await computeFileHash(file);
-                console.log("Computed Hash:", computedHash);
+                        try {
+                            // Compute the hash of the uploaded file
+                            const computedHash = await computeFileHash(file);
+                            console.log("Computed Hash:", computedHash);
 
-                // Fetch allowed hashes (refreshed on each click)
-                const allowedHashes = await loadAllowedHashes();
+                            // Fetch allowed hashes (refreshed on each click)
+                            const allowedHashes = await loadAllowedHashes();
 
-                // Check if the computed hash is in the allowed hashes
-                if (allowedHashes.includes(computedHash)) {
-                    const reader = new FileReader();
+                            // Check if the computed hash is in the allowed hashes
+                            if (allowedHashes.includes(computedHash)) {
+                                const reader = new FileReader();
 
-                    reader.onload = function (event) {
-                        const encryptedContent = event.target.result;
-                        const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
+                                reader.onload = function (event) {
+                                    const encryptedContent = event.target.result;
+                                    const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
 
-                        // Render or use decrypted content as needed
-                        document.open();
-                        document.write(decryptedContent);
-                        document.close();
+                                    // Render or use decrypted content as needed
+                                    document.open();
+                                    document.write(decryptedContent);
+                                    document.close();
 
-                        console.log("File decrypted and rendered.");
-                    };
+                                    console.log("File decrypted and rendered.");
+                                };
 
-                    reader.readAsText(file); // Read as text for decryption
+                                reader.readAsText(file); // Read as text for decryption
+                            } else {
+                                showAlert(`File hash is not allowed: ${computedHash}`);
+                            }
+                        } catch (error) {
+                            console.error('Error processing file:', error);
+                            showAlert('An error occurred while processing the file.');
+                        }
+                    }
                 } else {
-                    showAlert(`File hash is not allowed: ${computedHash}`);
+                    showAlert('Please select a file.');
                 }
-            } catch (error) {
-                console.error('Error processing file:', error);
-                showAlert('An error occurred while processing the file.');
-            }
-        }
-    } else {
-        showAlert('Please select a file.');
-    }
-});
+            });
 
             document.getElementById('clearPasswordButton').addEventListener('click', function () {
                 clearSavedPassword();
