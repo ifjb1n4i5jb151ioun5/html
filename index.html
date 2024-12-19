@@ -119,12 +119,29 @@
             const uploadfilebutton = document.getElementById('uploadfilebutton');
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
+
+            // Check for saved password
             const savedPassword = localStorage.getItem('encryptionPassword');
 
-            passwordButton.style.display = 'inline-block';
-            applyConfigButton.style.display = 'none';
-            configFileInput.style.display = 'none';
-            renderFileInput.style.display = 'none';
+            // Initially hide the password button
+            passwordButton.style.display = 'none';
+
+            // Function to update button visibility based on conditions
+            function updatePasswordButtonVisibility() {
+                if (!savedPassword && renderFileInput.files.length > 0) {
+                    passwordButton.style.display = 'inline-block'; // Show button if no password and file is uploaded
+                } else {
+                    passwordButton.style.display = 'none'; // Hide otherwise
+                }
+            }
+
+            // Check for file changes
+            renderFileInput.addEventListener('change', function () {
+                updatePasswordButtonVisibility(); // Update visibility when a file is uploaded
+            });
+
+            // Initial check on page load
+            updatePasswordButtonVisibility();
 
             if (window.navigator.standalone) {
                 uploadIconConfigButton.style.display = "none";
@@ -133,13 +150,19 @@
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
                 uploadfilebutton.style.display = "none";
+
+                if (savedPassword) {
+                    document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
+                    document.getElementById('clearPasswordButton').style.display = 'inline-block';
+                    passwordButton.style.display = 'none';
+                }
+
+                configFileInput.style.display = 'none';
+                applyConfigButton.style.display = 'none';
+
+                return; // Exit if in standalone mode
             }
 
-            if (savedPassword) {
-                document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
-                document.getElementById('clearPasswordButton').style.display = 'inline-block';
-                document.getElementById('passwordfieldButton').style.display = 'none';
-            }
 
             configFileInput.addEventListener('change', function () {
                 if (configFileInput.files.length > 0) {
@@ -147,6 +170,7 @@
                     applyConfigButton.style.display = 'none';
                     passwordButton.style.display = 'inline-block';
                     applyConfigButton.style.display = 'inline-block';
+                    updatePasswordButtonVisibility(); // Update visibility based on new state
                 } else {
                     applyConfigButton.style.display = 'inline-block';
                 }
@@ -171,7 +195,7 @@
 
             function processConfigFile() {
                 const file = configFileInput.files[0];
-                const password = document.getElementById('passwordField').value;
+                const password = passwordField.value;
 
                 if (file && password) {
                     const reader = new FileReader();
