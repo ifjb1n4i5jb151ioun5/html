@@ -119,11 +119,16 @@
             const uploadfilebutton = document.getElementById('uploadfilebutton');
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
+            const savedPassword = localStorage.getItem('encryptionPassword');
 
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
+
+            if (savedPassword) {
+                passwordButton.style.display = 'none';
+            }
 
             if (window.navigator.standalone) {
                 uploadIconConfigButton.style.display = "none";
@@ -133,7 +138,6 @@
                 uploadfilebutton.style.display = "none";
             }
 
-            const savedPassword = localStorage.getItem('encryptionPassword');
             if (savedPassword) {
                 document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
                 document.getElementById('clearPasswordButton').style.display = 'inline-block';
