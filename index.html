@@ -20,7 +20,7 @@
     <div id="fadeOverlay"></div>
     <main>
         <article id="uploadFile">
-            <button id="rememberedpasswordbutton">Password Saved</button>
+            <button id="rememberedpasswordbutton" style="display: none;">Password Saved</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
@@ -64,8 +64,8 @@
         }
 
         async function computeFileHash(file) {
-            const fileContent = await file.text(); // Read file content as text
-            return sha3_256(fileContent); // Compute SHA3-256 hash directly
+            const fileContent = await file.text();
+            return sha3_256(fileContent);
         }
 
         async function loadAllowedHashes() {
@@ -80,19 +80,30 @@
         }
 
         function aesDecrypt(encryptedContent, key) {
-            // Decode Base64 and extract IV and ciphertext
             const fullCipher = CryptoJS.enc.Base64.parse(encryptedContent);
-            const iv = fullCipher.words.slice(0, 4); // Extract IV from the first 16 bytes
-            const ciphertext = fullCipher.words.slice(4); // The rest is ciphertext
+            const iv = fullCipher.words.slice(0, 4);
+            const ciphertext = fullCipher.words.slice(4);
 
-            // Decrypt using AES
             const decrypted = CryptoJS.AES.decrypt(
                 { ciphertext: CryptoJS.lib.WordArray.create(ciphertext) },
                 CryptoJS.enc.Utf8.parse(key),
                 { iv: CryptoJS.lib.WordArray.create(iv) }
             );
 
-            return decrypted.toString(CryptoJS.enc.Utf8); // Return as UTF-8 string
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+
+        function savePassword(password) {
+            localStorage.setItem('encryptionPassword', password);
+            document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
+            document.getElementById('clearPasswordButton').style.display = 'inline-block';
+        }
+
+        function clearSavedPassword() {
+            localStorage.removeItem('encryptionPassword');
+            document.getElementById('rememberedpasswordbutton').style.display = 'none';
+            document.getElementById('clearPasswordButton').style.display = 'none';
+            document.getElementById('passwordField').value = '';
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -114,12 +125,18 @@
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
 
-            if (window.navigator.standalone) { // Standalone Mode
+            if (window.navigator.standalone) {
                 uploadIconConfigButton.style.display = "none";
-            } else { // Regular Mode
+            } else {
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
                 uploadfilebutton.style.display = "none";
+            }
+
+            const savedPassword = localStorage.getItem('encryptionPassword');
+            if (savedPassword) {
+                document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
+                document.getElementById('clearPasswordButton').style.display = 'inline-block';
             }
 
             configFileInput.addEventListener('change', function () {
@@ -211,27 +228,28 @@
                 document.title = appTitle;
             }
 
-
             applyConfigButton.addEventListener('click', function () {
                 processConfigFile();
             });
 
             viewbutton.addEventListener('click', async function () {
                 const fileInput = document.getElementById('renderFileInput');
-                const passwordFieldValue = passwordField.value;
+                let passwordFieldValue = passwordField.value;
+
+                // Check if there's a saved password
+                if (!passwordFieldValue) {
+                    passwordFieldValue = localStorage.getItem('encryptionPassword');
+                }
 
                 if (fileInput.files.length > 0 && passwordFieldValue) {
                     const file = fileInput.files[0];
 
                     try {
-                        // Compute the hash of the uploaded file
                         const computedHash = await computeFileHash(file);
                         console.log("Computed Hash:", computedHash);
 
-                        // Fetch allowed hashes (refreshed on each click)
                         const allowedHashes = await loadAllowedHashes();
 
-                        // Check if the computed hash is in the allowed hashes
                         if (allowedHashes.includes(computedHash)) {
                             const reader = new FileReader();
 
@@ -242,13 +260,16 @@
                                     document.open();
                                     document.write(decryptedContent);
                                     document.close();
+
+                                    // Save the password if decryption was successful
+                                    savePassword(passwordFieldValue);
                                 } catch (decryptionError) {
                                     console.error('Decryption failed:', decryptionError);
                                     showAlert('Decryption failed. Please check your password.');
                                 }
                             };
 
-                            reader.readAsText(file); // Read as text for decryption
+                            reader.readAsText(file);
                         } else {
                             showAlert(`File hash is not allowed: ${computedHash}`);
                         }
@@ -268,7 +289,9 @@
             uploadfilebutton.addEventListener('click', function () {
                 renderFileInput.click();
             });
-        });          
+
+            clearPasswordButton.addEventListener('click', clearSavedPassword);
+        });
     </script>
 
 </body>
