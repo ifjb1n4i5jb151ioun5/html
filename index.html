@@ -121,7 +121,7 @@
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
             const savedPassword = localStorage.getItem('encryptionPassword');
 
-            passwordButton.style.display = 'none';
+            passwordButton.style.display = 'inline-block';
             applyConfigButton.style.display = 'none';
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
@@ -153,7 +153,6 @@
 
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
-                    passwordButton.style.display = 'inline-block';
                     viewbutton.style.display = 'inline-block';
                     uploadfilebutton.style.display = 'none';
                 } else {
