@@ -291,6 +291,7 @@
                             atob(savedFile); // Decode Base64
                         const decryptedContent =
                             aesDecrypt(encryptedContent, passwordFieldValue);
+                        savePassword()
                         document.open();
                         document.write(decryptedContent);
                         document.close();
