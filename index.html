@@ -21,6 +21,7 @@
     <main>
         <article id="uploadFile">
             <button id="rememberedpasswordbutton" style="display: none;">Password Saved</button>
+            <button id="savedfilebutton">File Saved</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
@@ -120,11 +121,14 @@
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
             const savedPassword = localStorage.getItem('encryptionPassword');
+            const savedFile = localStorage.getItem('savedFile');
+            const filebutton = document.getElementById('savedfilebutton');
 
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
+            filebutton.style.display = 'none';
 
             updatePasswordButtonVisibility();
 
@@ -149,6 +153,10 @@
                 document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
                 document.getElementById('clearPasswordButton').style.display = 'inline-block';
                 document.getElementById('passwordfieldButton').style.display = 'none';
+            }
+
+            if (savedFile) {
+                document.getElementById('savedfilebutton').style.display = 'inline-block';
             }
 
             configFileInput.addEventListener('change', function () {
@@ -272,7 +280,6 @@
                 reader.onload = function (event) {
                     const base64String = event.target.result.split(',')[1]; // Get Base64 string
                     localStorage.setItem('savedFile', base64String);
-                    alert("File saved successfully!");
                 };
                 reader.readAsDataURL(file);
             }
