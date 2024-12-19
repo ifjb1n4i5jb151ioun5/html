@@ -126,10 +126,6 @@
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
 
-            if (savedPassword) {
-                passwordButton.style.display = 'none';
-            }
-
             if (window.navigator.standalone) {
                 uploadIconConfigButton.style.display = "none";
             } else {
@@ -141,6 +137,7 @@
             if (savedPassword) {
                 document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
                 document.getElementById('clearPasswordButton').style.display = 'inline-block';
+                document.getElementById('passwordfieldButton').style.display = 'none';
             }
 
             configFileInput.addEventListener('change', function () {
