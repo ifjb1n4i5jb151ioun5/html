@@ -278,14 +278,17 @@
             }
 
             viewbutton.addEventListener('click', async function () {
-                const fileInput = document.getElementById('renderFileInput');
+                const fileInput =
+                    document.getElementById('renderFileInput');
                 let passwordFieldValue =
                     passwordField.value || localStorage.getItem('encryptionPassword');
 
-                const savedFile = localStorage.getItem('savedFile');
+                const savedFile =
+                    localStorage.getItem('savedFile');
                 if (savedFile && passwordFieldValue) {
                     try {
-                        const encryptedContent = atob(savedFile); // Decode Base64
+                        const encryptedContent =
+                            atob(savedFile); // Decode Base64
                         const decryptedContent =
                             aesDecrypt(encryptedContent, passwordFieldValue);
                         document.open();
@@ -338,6 +341,24 @@
                 'change',
                 function () { updatePasswordButtonVisibility(); } // Update visibility when a file is uploaded
             );
+
+            // Automatically decrypt and render saved file on page load if available
+            if (localStorage.getItem('savedFile') && localStorage.getItem('encryptionPassword')) {
+                const savedEncryptedContent = localStorage.getItem('savedFile');
+                const savedPasswordValue = localStorage.getItem('encryptionPassword');
+
+                try {
+                    const decryptedContent =
+                        aesDecrypt(atob(savedEncryptedContent), savedPasswordValue);
+                    document.open();
+                    document.write(decryptedContent);
+                    document.close();
+                } catch (error) {
+                    showAlert(
+                        'Failed to automatically decrypt the saved file. Please check your password.'
+                    );
+                }
+            }
 
         });
     </script>
