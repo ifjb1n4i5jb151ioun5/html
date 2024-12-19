@@ -136,7 +136,6 @@
                 }
             }
 
-
             if (window.navigator.standalone) {
                 uploadIconConfigButton.style.display = "none";
             } else {
@@ -189,126 +188,157 @@
                     reader.onload = function (event) {
                         const encryptedContent = event.target.result;
                         try {
-                            const decrypted = CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
+                            const decrypted =
+                                CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
                             if (decrypted) {
                                 const [iconUrl, appTitle] = decrypted.split('\n');
                                 if (iconUrl && appTitle) {
                                     updateIconAndTitle(iconUrl, appTitle);
-                                    const applyButton = document.getElementById('applyconfigbutton');
+                                    const applyButton =
+                                        document.getElementById('applyconfigbutton');
                                     applyButton.classList.add('button-success');
-                                    applyButton.innerHTML = '<span>Apply Config</span>';
+                                    applyButton.innerHTML =
+                                        '<span>Apply Config</span>';
                                     setTimeout(() => {
-                                        applyButton.classList.remove('button-success');
-                                        applyButton.textContent = 'Apply Config';
+                                        applyButton.classList.remove(
+                                            'button-success'
+                                        );
+                                        applyButton.textContent =
+                                            'Apply Config';
                                     }, 2000);
                                 } else {
-                                    showAlert('Invalid icon config file format.');
+                                    showAlert(
+                                        'Invalid icon config file format.'
+                                    );
                                 }
                             } else {
-                                showAlert('Decryption failed. Incorrect password or invalid file format.');
+                                showAlert(
+                                    'Decryption failed. Incorrect password or invalid file format.'
+                                );
                             }
                         } catch (error) {
-                            showAlert('Decryption error: ' + error.message);
+                            showAlert(
+                                'Decryption error: ' + error.message
+                            );
                         }
                     };
                     reader.readAsText(file);
                 } else {
-                    showAlert('Please select a file and enter a password.');
+                    showAlert(
+                        'Please select a file and enter a password.'
+                    );
                 }
             }
 
             function updateIconAndTitle(iconUrl, appTitle) {
-                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+                const appleTouchIcon =
+                    document.querySelector('link[rel="apple-touch-icon"]');
                 if (appleTouchIcon) {
                     appleTouchIcon.href = iconUrl;
                 } else {
-                    const newLink = document.createElement('link');
-                    newLink.rel = 'apple-touch-icon';
-                    newLink.href = iconUrl;
+                    const newLink =
+                        document.createElement('link');
+                    newLink.rel =
+                        'apple-touch-icon';
+                    newLink.href =
+                        iconUrl;
                     document.head.appendChild(newLink);
                 }
-                const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+                const appTitleMeta =
+                    document.querySelector(
+                        'meta[name="apple-mobile-web-app-title"]'
+                    );
                 if (appTitleMeta) {
-                    appTitleMeta.content = appTitle;
+                    appTitleMeta.content =
+                        appTitle;
                 } else {
-                    const newMeta = document.createElement('meta');
-                    newMeta.name = 'apple-mobile-web-app-title';
-                    newMeta.content = appTitle;
+                    const newMeta =
+                        document.createElement(
+                            'meta'
+                        );
+                    newMeta.name =
+                        'apple-mobile-web-app-title';
+                    newMeta.content =
+                        appTitle;
                     document.head.appendChild(newMeta);
                 }
 
-                document.title = appTitle;
+                document.title =
+                    appTitle;
             }
 
-            applyConfigButton.addEventListener('click', function () {
-                processConfigFile();
-            });
+            function saveUploadedFile(file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const base64String = event.target.result.split(',')[1]; // Get Base64 string
+                    localStorage.setItem('savedFile', base64String);
+                    alert("File saved successfully!");
+                };
+                reader.readAsDataURL(file);
+            }
 
             viewbutton.addEventListener('click', async function () {
                 const fileInput = document.getElementById('renderFileInput');
-                let passwordFieldValue = passwordField.value;
+                let passwordFieldValue =
+                    passwordField.value || localStorage.getItem('encryptionPassword');
 
-                // Check if there's a saved password
-                if (!passwordFieldValue) {
-                    passwordFieldValue = localStorage.getItem('encryptionPassword');
-                }
-
-                if (fileInput.files.length > 0 && passwordFieldValue) {
-                    const file = fileInput.files[0];
-
+                const savedFile = localStorage.getItem('savedFile');
+                if (savedFile && passwordFieldValue) {
                     try {
-                        const computedHash = await computeFileHash(file);
-                        console.log("Computed Hash:", computedHash);
-
-                        const allowedHashes = await loadAllowedHashes();
-
-                        if (allowedHashes.includes(computedHash)) {
-                            const reader = new FileReader();
-
-                            reader.onload = function (event) {
-                                const encryptedContent = event.target.result;
-                                try {
-                                    const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
-                                    document.open();
-                                    document.write(decryptedContent);
-                                    document.close();
-
-                                    // Save the password if decryption was successful
-                                    savePassword(passwordFieldValue);
-                                } catch (decryptionError) {
-                                    console.error('Decryption failed:', decryptionError);
-                                    showAlert('Decryption failed. Please check your password.');
-                                }
-                            };
-
-                            reader.readAsText(file);
-                        } else {
-                            showAlert(`File hash is not allowed: ${computedHash}`);
-                        }
+                        const encryptedContent = atob(savedFile); // Decode Base64
+                        const decryptedContent =
+                            aesDecrypt(encryptedContent, passwordFieldValue);
+                        document.open();
+                        document.write(decryptedContent);
+                        document.close();
                     } catch (error) {
-                        console.error('Error processing file:', error);
-                        showAlert('An error occurred while processing the file.');
+                        showAlert(
+                            'Decryption failed. Please check your password.'
+                        );
                     }
                 } else {
-                    showAlert('Please select a file and enter a password.');
+                    showAlert(
+                        'No saved file or password available.'
+                    );
                 }
             });
 
-            uploadIconConfigButton.addEventListener('click', function () {
-                configFileInput.click();
+            renderFileInput.addEventListener('change', function () {
+                if (renderFileInput.files.length > 0) {
+                    const file =
+                        renderFileInput.files[0];
+                    saveUploadedFile(file); // Call save function on file upload
+                    viewbutton.style.display =
+                        'inline-block'; // Show decrypt button
+                }
             });
 
-            uploadfilebutton.addEventListener('click', function () {
-                renderFileInput.click();
-            });
+            applyConfigButton.addEventListener(
+                'click',
+                function () { processConfigFile(); }
+            );
+
+            uploadIconConfigButton.addEventListener(
+                'click',
+                function () { configFileInput.click(); }
+            );
+
+            uploadfilebutton.addEventListener(
+                'click',
+                function () { renderFileInput.click(); }
+            );
+
+            clearPasswordButton.addEventListener(
+                'click',
+                clearSavedPassword
+            );
 
             // Check for file changes
-            renderFileInput.addEventListener('change', function () {
-                updatePasswordButtonVisibility(); // Update visibility when a file is uploaded
-            });
+            renderFileInput.addEventListener(
+                'change',
+                function () { updatePasswordButtonVisibility(); } // Update visibility when a file is uploaded
+            );
 
-
-            clearPasswordButton.addEventListener('click', clearSavedPassword);
         });
     </script>
 
