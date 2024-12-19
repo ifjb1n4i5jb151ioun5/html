@@ -166,7 +166,7 @@
                     applyConfigButton.style.display = 'inline-block';
                 }
             });
-            
+
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
                     passwordfieldButton.style.display = 'inline-block';
@@ -281,14 +281,18 @@
 
                             reader.onload = function (event) {
                                 const encryptedContent = event.target.result;
-                                const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
+                                try {
+                                    const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
+                                    document.open();
+                                    document.write(decryptedContent);
+                                    document.close();
 
-                                // Render or use decrypted content as needed
-                                document.open();
-                                document.write(decryptedContent);
-                                document.close();
-
-                                console.log("File decrypted and rendered.");
+                                    // Save the password after successful decryption and rendering
+                                    savePassword(passwordFieldValue);
+                                } catch (decryptionError) {
+                                    console.error('Decryption failed:', decryptionError);
+                                    showAlert('Decryption failed. Please check your password.');
+                                }
                             };
 
                             reader.readAsText(file); // Read as text for decryption
