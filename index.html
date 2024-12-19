@@ -63,36 +63,6 @@
             });
         }
 
-        function updateRememberPasswordState() {
-            const savedPassword = getSavedPassword();
-            const rememberedpasswordbutton = document.getElementById('rememberedpasswordbutton');
-            const passwordfieldButton = document.getElementById('passwordfieldButton');
-            const clearPasswordButton = document.getElementById('clearPasswordButton');
-
-            if (savedPassword) {
-                rememberedpasswordbutton.style.display = 'inline-block';
-                passwordfieldButton.style.display = 'none';
-            } else {
-                rememberedpasswordbutton.style.display = 'none';
-                clearPasswordButton.style.display = 'none';
-            }
-        }
-
-        function savePassword() {
-            const password = document.getElementById('passwordField').value;
-            localStorage.setItem('decryptionPassword', password);
-            updateRememberPasswordState();
-        }
-
-        function getSavedPassword() {
-            return localStorage.getItem('decryptionPassword');
-        }
-
-        function clearSavedPassword() {
-            localStorage.removeItem('decryptionPassword');
-            updateRememberPasswordState();
-        }
-
         async function computeFileHash(file) {
             const fileContent = await file.text(); // Read file content as text
             return sha3_256(fileContent); // Compute SHA3-256 hash directly
@@ -139,8 +109,6 @@
             const clearPasswordButton = document.getElementById("clearPasswordButton");
             const uploadIconConfigButton = document.getElementById('uploadIconConfigButton');
 
-            updateRememberPasswordState();
-
             passwordButton.style.display = 'none';
             applyConfigButton.style.display = 'none';
             configFileInput.style.display = 'none';
@@ -148,11 +116,9 @@
 
             if (window.navigator.standalone) { // Standalone Mode
                 uploadIconConfigButton.style.display = "none";
-                clearPasswordButton.style.display = "none";
             } else { // Regular Mode
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
-                clearPasswordButton.style.display = "none";
                 uploadfilebutton.style.display = "none";
             }
 
@@ -171,10 +137,7 @@
                 if (renderFileInput.files.length > 0) {
                     passwordfieldButton.style.display = 'inline-block';
                     viewbutton.style.display = 'inline-block';
-                    clearPasswordButton.style.display = 'inline-block';
                     uploadfilebutton.style.display = 'none';
-                    updateRememberPasswordState();
-                    fillPasswordField();
                 } else {
                     uploadfilebutton.style.display = 'inline-block';
                     viewbutton.style.display = 'none';
@@ -253,13 +216,6 @@
                 processConfigFile();
             });
 
-            function fillPasswordField() {
-                const savedPassword = getSavedPassword();
-                if (savedPassword) {
-                    document.getElementById('passwordField').value = savedPassword;
-                }
-            }
-
             viewbutton.addEventListener('click', async function () {
                 const fileInput = document.getElementById('renderFileInput');
                 const passwordFieldValue = passwordField.value;
@@ -286,9 +242,6 @@
                                     document.open();
                                     document.write(decryptedContent);
                                     document.close();
-
-                                    // Save the password after successful decryption and rendering
-                                    savePassword(passwordFieldValue);
                                 } catch (decryptionError) {
                                     console.error('Decryption failed:', decryptionError);
                                     showAlert('Decryption failed. Please check your password.');
@@ -306,11 +259,6 @@
                 } else {
                     showAlert('Please select a file and enter a password.');
                 }
-            });
-
-            document.getElementById('clearPasswordButton').addEventListener('click', function () {
-                clearSavedPassword();
-                showAlert('Saved password has been cleared.');
             });
 
             uploadIconConfigButton.addEventListener('click', function () {
