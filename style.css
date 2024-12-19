@@ -246,6 +246,7 @@ body {
     background-color: #282828;
     padding: 40px;
     border-radius: 8px;
+    margin-top: 20px;
 }
 
 /* Override Pico CSS */
@@ -412,4 +413,10 @@ header {
 
 #passwordmanagement {
     display: none;
+}
+
+#initial-setup-title {
+    color: white;
+    font-size: 26px;
+    font-family: sans-serif;
 }
