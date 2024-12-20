@@ -20,10 +20,6 @@
     <div id="fadeOverlay"></div>
     <main>
         <div id="initial-setup-title">Initial Setup</div>
-        <div id="restart" style="display: none;" >
-            <button id="rememberedpasswordbutton" style="display: inline-block;">Password Saved</button>
-            <button id="savedfilebutton">File Saved</button>
-        </div>
         <article id="uploadFile">
             <button id="rememberedpasswordbutton" style="display: none;">Password Saved</button>
             <button id="savedfilebutton">File Saved</button>
@@ -104,8 +100,6 @@
             document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
             document.getElementById('clearPasswordButton').style.display = 'inline-block';
             document.getElementById('passwordfieldButton').style.display = 'none';
-            document.getElementById('restart').style.display = 'inline-block';
-            document.getElementById('uploadfile').style.display = 'none';
         }
 
         function clearSavedPassword() {
