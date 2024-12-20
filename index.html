@@ -99,10 +99,8 @@
         function savePassword(password) {
             localStorage.setItem('encryptionPassword', password);
             document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
+            document.getElementById('clearPasswordButton').style.display = 'inline-block';
             document.getElementById('passwordfieldButton').style.display = 'none';
-            document.getElementById('passwordfield').style.display = 'none';
-            document.getElementById('savedfilebutton').style.display = 'inline-block';
-            document.getElementById('viewbutton').style.display = 'none'
         }
 
         function clearSavedPassword() {
@@ -152,6 +150,10 @@
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
                 uploadfilebutton.style.display = "none";
+            }
+
+            if (savedFile) {
+                document.getElementById('savedfilebutton').style.display = 'inline-block';
             }
 
             configFileInput.addEventListener('change', function () {
