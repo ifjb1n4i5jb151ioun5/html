@@ -99,6 +99,7 @@
             localStorage.setItem('encryptionPassword', password);
             document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
             document.getElementById('clearPasswordButton').style.display = 'inline-block';
+            document.getElementById('passwordfieldButton').style.display = 'none';
         }
 
         function clearSavedPassword() {
@@ -148,12 +149,6 @@
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
                 uploadfilebutton.style.display = "none";
-            }
-
-            if (savedPassword) {
-                document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
-                document.getElementById('clearPasswordButton').style.display = 'inline-block';
-                document.getElementById('passwordfieldButton').style.display = 'none';
             }
 
             if (savedFile) {
@@ -296,13 +291,10 @@
                         const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
                         savePassword(passwordFieldValue);
 
-                        // Create a Blob from the decrypted content to compute its hash
                         const blob = new Blob([decryptedContent], { type: 'text/plain' });
 
-                        // Compute the hash of the decrypted content
                         const decryptedHash = await computeFileHash(blob);
 
-                        // Load allowed hashes and check if the decrypted hash is allowed
                         const allowedHashes = await loadAllowedHashes();
                         if (allowedHashes.includes(decryptedHash)) {
                             document.open();
