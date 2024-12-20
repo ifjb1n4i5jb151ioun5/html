@@ -20,11 +20,12 @@
     <div id="fadeOverlay"></div>
     <main>
         <div id="initial-setup-title">Initial Setup</div>
-        <article id="uploadFile">
-            <button id="rememberedpasswordbutton" style="display: none;">Password Saved</button>
-            <button id="rememberedfilebutton" style="display: none;">File Saved</button>
+        <article id="restart" style="display: none;">
+            <button id="rememberedpasswordbutton">Password Saved</button>
             <button id="savedfilebutton">File Saved</button>
             <button id="clearPasswordButton" style="display: none;">Clear Password</button>
+        </article>
+        <article id="uploadFile">
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
             <button id="uploadfilebutton">Upload File</button>
@@ -98,9 +99,8 @@
 
         function savePassword(password) {
             localStorage.setItem('encryptionPassword', password);
-            document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
-            document.getElementById('clearPasswordButton').style.display = 'inline-block';
-            document.getElementById('passwordfieldButton').style.display = 'none';
+            document.getElementById('uploadfile').style.display = 'none';
+            document.getElementById('restart').style.display = 'block';
         }
 
         function clearSavedPassword() {
