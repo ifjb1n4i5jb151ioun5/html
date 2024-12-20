@@ -312,7 +312,7 @@
                             showAlert(`The encrypted file is not allowed. Calculated hash: ${encryptedHash}`);
                         }
                     } catch (error) {
-                        showAlert('Decryption failed. Please check your password. Calculated hash: ${encryptedHash}');
+                        showAlert(`Decryption failed. Please check your password. Calculated hash: ${encryptedHash}`);
                     }
                 } else {
                     showAlert('No saved file or password available.');
