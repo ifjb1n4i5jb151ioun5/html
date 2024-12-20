@@ -293,22 +293,23 @@
                 if (savedFile && passwordFieldValue) {
                     try {
                         const encryptedContent = atob(savedFile); // Decode Base64
+                        const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
+                        savePassword(passwordFieldValue);
 
-                        // Calculate the hash of the encrypted content
-                        const encryptedHash = sha3_256(encryptedContent); // Assuming sha3_256 is available from js-sha3
+                        // Create a Blob from the decrypted content to compute its hash
+                        const blob = new Blob([decryptedContent], { type: 'text/plain' });
 
-                        // Load allowed hashes and check if the encrypted hash is allowed
+                        // Compute the hash of the decrypted content
+                        const decryptedHash = await computeFileHash(blob);
+
+                        // Load allowed hashes and check if the decrypted hash is allowed
                         const allowedHashes = await loadAllowedHashes();
-                        if (allowedHashes.includes(encryptedHash)) {
-                            // Proceed with decryption if the hash is allowed
-                            const decryptedContent = aesDecrypt(encryptedContent, passwordFieldValue);
-                            savePassword(passwordFieldValue);
-
+                        if (allowedHashes.includes(decryptedHash)) {
                             document.open();
                             document.write(decryptedContent);
                             document.close();
                         } else {
-                            showAlert(`The encrypted file is not allowed. Calculated hash: ${encryptedHash}`);
+                            showAlert('The decrypted file is not allowed.');
                         }
                     } catch (error) {
                         showAlert('Decryption failed. Please check your password.');
