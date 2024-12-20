@@ -99,9 +99,9 @@
         function savePassword(password) {
             localStorage.setItem('encryptionPassword', password);
             document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
-            document.getElementById('clearPasswordButton').style.display = 'inline-block';
             document.getElementById('passwordfieldButton').style.display = 'none';
             document.getElementById('savedfilebutton').style.display = 'inline-block';
+            document.getElementById('viewbutton').style.display = 'none'
         }
 
         function clearSavedPassword() {
