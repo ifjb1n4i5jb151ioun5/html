@@ -242,7 +242,7 @@ body {
 }
 
 /* Upload file button */
-#uploadFile, #restart {
+#uploadFile {
     background-color: #282828;
     padding: 40px;
     border-radius: 8px;
