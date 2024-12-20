@@ -309,7 +309,7 @@
                             document.write(decryptedContent);
                             document.close();
                         } else {
-                            showAlert('The decrypted file is not allowed.');
+                            showAlert(`The encrypted file is not allowed. Calculated hash: ${encryptedHash}`);
                         }
                     } catch (error) {
                         showAlert('Decryption failed. Please check your password.');
