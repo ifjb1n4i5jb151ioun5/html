@@ -170,6 +170,14 @@
                 }
             });
 
+            renderFileInput.addEventListener('change', function (){
+                if (renderFileInput.files.length > 0) {
+                    passwordField.style.display = 'inline-block';
+                } else {
+                    passwordField.style.display = 'none';
+                }
+            })
+
             function processConfigFile(base64String, password) {
                 const encryptedContent = base64String.split(',')[1];
 
