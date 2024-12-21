@@ -17,6 +17,9 @@
 </head>
 
 <body>
+    <div id="loadingOverlay"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: black; z-index: 9999;">
+    </div>
     <div id="fadeOverlay"></div>
     <main>
         <div id="initial-setup-title">Initial Setup</div>
@@ -70,14 +73,20 @@
         }
 
         async function loadAllowedHashes() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'block'; // Show the overlay
+
             const timestamp = new Date().getTime();
-            return fetch(`https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt?t=${timestamp}`)
-                .then(response => response.text())
-                .then(text => text.split('\n').filter(hash => hash.trim() !== ''))
-                .catch(error => {
-                    console.error('Error loading allowed hashes:', error);
-                    return [];
-                });
+            try {
+                const response = await fetch(`https://raw.githubusercontent.com/ifjb1n4i5jb151ioun5/allowed-hashes/refs/heads/main/allowed-hashes.txt?t=${timestamp}`);
+                const text = await response.text();
+                return text.split('\n').filter(hash => hash.trim() !== '');
+            } catch (error) {
+                console.error('Error loading allowed hashes:', error);
+                return [];
+            } finally {
+                loadingOverlay.style.display = 'none'; // Hide the overlay
+            }
         }
 
         function aesDecrypt(encryptedContent, key) {
@@ -271,13 +280,16 @@
             }
 
             viewbutton.addEventListener('click', async function () {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.style.display = 'block'; // Show the overlay
+
                 const savedFile = localStorage.getItem('savedFile');
                 let passwordFieldValue = passwordField.value || localStorage.getItem('encryptionPassword');
                 savePassword(passwordFieldValue);
 
                 if (savedFile && passwordFieldValue) {
                     try {
-                        const encryptedContent = atob(savedFile); // Decode Base64
+                        const encryptedContent = atob(savedFile);
                         const encryptedHash = sha3_256(encryptedContent);
 
                         const allowedHashes = await loadAllowedHashes();
@@ -292,12 +304,15 @@
                         }
                     } catch (error) {
                         showAlert(`Decryption failed. Please check your password. Calculated hash: ${encryptedHash}`);
+                    } finally {
+                        loadingOverlay.style.display = 'none'; // Hide the overlay
                     }
                 } else {
                     showAlert('No saved file or password available.');
+                    loadingOverlay.style.display = 'none'; // Hide the overlay
                 }
             });
-
+            
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
                     const file =
@@ -333,7 +348,7 @@
             if (localStorage.getItem('savedFile') && localStorage.getItem('encryptionPassword')) {
                 const savedEncryptedContent = localStorage.getItem('savedFile');
                 const savedPasswordValue = localStorage.getItem('encryptionPassword');
-                
+
                 (async function () {
                     try {
                         const encryptedContent = atob(savedEncryptedContent);
