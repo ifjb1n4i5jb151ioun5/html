@@ -150,11 +150,13 @@
             if (window.navigator.standalone) {
                 applyConfigButton.style.display = 'none';
                 passwordField.style.display = 'none';
+                passwordField.placeholder = 'File Password...';
             } else {
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
                 uploadfilebutton.style.display = "none";
                 passwordField.style.display = 'inline-block';
+                passwordField.placeholder = 'Config Password...';
             }
 
             if (savedFile) {
