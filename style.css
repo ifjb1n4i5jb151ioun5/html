@@ -216,16 +216,6 @@ main {
     margin: 0 auto;
 }
 
-/*Enter Password Field Button*/
-#passwordfieldButton {
-    background-color: #282828;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
 /* Render Button */
 #viewButton {
     width: 100%;
@@ -314,16 +304,6 @@ header {
     transition: box-shadow 1s ease-in-out;
 }
 
-#passwordfieldButton {
-    color: #8f8f8f;
-}
-
-#passwordfieldButton:focus {
-    outline: none;
-    box-shadow: 0 0 15px #525f7a, 0 0 10px #525f7a;
-    transition: box-shadow 0.3s ease-in-out;
-}
-
 #configContainer input[type="file"],
 #renderContainer input[type="file"] {
     display: block;
@@ -360,7 +340,7 @@ header {
     visibility: hidden;
 }
 
-#passwordfieldButton, #applyconfigbutton, #passwordField {
+#applyconfigbutton, #passwordField, #viewbutton {
     min-width: 200px;
     min-height: 40px;
 }
