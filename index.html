@@ -19,7 +19,6 @@
 <body>
     <div id="fadeOverlay"></div>
     <main>
-        <div id="black-overlay" style="display: none;"></div>
         <div id="initial-setup-title">Initial Setup</div>
         <article id="uploadFile">
             <button id="rememberedpasswordbutton" style="display: none;">Password Saved</button>
@@ -340,8 +339,6 @@
                         const encryptedContent = atob(savedEncryptedContent);
                         const encryptedHash = sha3_256(encryptedContent);
                         const allowedHashes = await loadAllowedHashes();
-
-                        document.getElementById('black-overlay').style.display = 'block';
 
                         if (allowedHashes.includes(encryptedHash)) {
                             const decryptedContent = aesDecrypt(encryptedContent, savedPasswordValue);

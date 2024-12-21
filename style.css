@@ -420,9 +420,3 @@ header {
     font-size: 26px;
     font-family: sans-serif;
 }
-
-#black-overlay {
-    background-color: black;
-    height: 100%;
-    width: 100%;
-}
