@@ -25,7 +25,8 @@
         <div id="initial-setup-title">Initial Setup</div>
         <article id="uploadFile">
             <button id="rememberedpasswordbutton" style="display: none;">Password Saved</button>
-            <input type="password" placeholder="Password..." id="passwordField">
+            <button id="savedfilebutton">File Saved</button>
+            <input type="password" id="passwordField">
             <button id="uploadfilebutton">Upload File</button>
             <div id="renderContainer">
                 <input type="file" id="renderFileInput">
@@ -140,18 +141,28 @@
             const uploadfilebutton = document.getElementById('uploadfilebutton');
             const savedPassword = localStorage.getItem('encryptionPassword');
             const savedFile = localStorage.getItem('savedFile');
+            const filebutton = document.getElementById('savedfilebutton');
 
             configFileInput.style.display = 'none';
             renderFileInput.style.display = 'none';
+            filebutton.style.display = 'none';
 
             if (window.navigator.standalone) {
-                document.getElementById('password').style.display = 'none';
-                document.getElementById('applyconfigbutton').style.display = 'none';
             } else {
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
                 uploadfilebutton.style.display = "none";
             }
+
+            if (savedFile) {
+                document.getElementById('savedfilebutton').style.display = 'inline-block';
+            }
+
+            configFileInput.addEventListener('change', function () {
+                if (configFileInput.files.length > 0) {
+                } else {
+                }
+            });
 
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
