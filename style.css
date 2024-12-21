@@ -229,6 +229,7 @@ main {
 /* Render Button */
 #viewButton {
     width: 100%;
+    box-sizing: border-box;
     background-color: #282828;
     color: white;
     border: none;
