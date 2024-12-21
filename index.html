@@ -191,45 +191,31 @@
                     reader.onload = function (event) {
                         const encryptedContent = event.target.result;
                         try {
-                            const decrypted =
-                                CryptoJS.AES.decrypt(encryptedContent, password).toString(CryptoJS.enc.Utf8);
+                            const decrypted = aesDecrypt(encryptedContent, password);
                             if (decrypted) {
                                 const [iconUrl, appTitle] = decrypted.split('\n');
                                 if (iconUrl && appTitle) {
                                     updateIconAndTitle(iconUrl, appTitle);
-                                    const applyButton =
-                                        document.getElementById('applyconfigbutton');
+                                    const applyButton = document.getElementById('applyconfigbutton');
                                     applyButton.classList.add('button-success');
-                                    applyButton.innerHTML =
-                                        '<span>Apply Config</span>';
+                                    applyButton.innerHTML = '<span>Apply Config</span>';
                                     setTimeout(() => {
-                                        applyButton.classList.remove(
-                                            'button-success'
-                                        );
-                                        applyButton.textContent =
-                                            'Apply Config';
+                                        applyButton.classList.remove('button-success');
+                                        applyButton.textContent = 'Apply Config';
                                     }, 2000);
                                 } else {
-                                    showAlert(
-                                        'Invalid icon config file format.'
-                                    );
+                                    showAlert('Invalid icon config file format.');
                                 }
                             } else {
-                                showAlert(
-                                    'Decryption failed. Incorrect password or invalid file format.'
-                                );
+                                showAlert('Decryption failed. Incorrect password or invalid file format.');
                             }
                         } catch (error) {
-                            showAlert(
-                                'Decryption error: ' + error.message
-                            );
+                            showAlert('Decryption error: ' + error.message);
                         }
                     };
                     reader.readAsText(file);
                 } else {
-                    showAlert(
-                        'Please select a file and enter a password.'
-                    );
+                    showAlert('Please select a file and enter a password.');
                 }
             }
 
@@ -312,7 +298,7 @@
                     loadingOverlay.style.display = 'none'; // Hide the overlay
                 }
             });
-            
+
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
                     const file =
