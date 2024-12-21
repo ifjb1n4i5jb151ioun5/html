@@ -89,26 +89,15 @@
             }
         }
 
-        function aesDecrypt(encryptedContent, password) {
+        function aesDecrypt(encryptedContent, key) {
             const fullCipher = CryptoJS.enc.Base64.parse(encryptedContent);
-
-            const salt = CryptoJS.lib.WordArray.create(fullCipher.words.slice(0, 4), 16);
-            const iv = CryptoJS.lib.WordArray.create(fullCipher.words.slice(4, 8), 16);
-            const ciphertext = CryptoJS.lib.WordArray.create(fullCipher.words.slice(8));
-
-            const key = CryptoJS.PBKDF2(password, salt, {
-                keySize: 256 / 32,
-                iterations: 1000
-            });
+            const iv = fullCipher.words.slice(0, 4);
+            const ciphertext = fullCipher.words.slice(4);
 
             const decrypted = CryptoJS.AES.decrypt(
-                { ciphertext: ciphertext },
-                key,
-                {
-                    iv: iv,
-                    padding: CryptoJS.pad.Pkcs7,
-                    mode: CryptoJS.mode.CBC
-                }
+                { ciphertext: CryptoJS.lib.WordArray.create(ciphertext) },
+                CryptoJS.enc.Utf8.parse(key),
+                { iv: CryptoJS.lib.WordArray.create(iv) }
             );
 
             return decrypted.toString(CryptoJS.enc.Utf8);
@@ -255,7 +244,7 @@
 
                 document.title = appTitle; // Update document title
             }
-
+            
             function saveUploadedFile(file) {
                 const reader = new FileReader();
                 reader.onload = function (event) {
