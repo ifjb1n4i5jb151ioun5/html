@@ -220,42 +220,31 @@
             }
 
             function updateIconAndTitle(iconUrl, appTitle) {
-                const appleTouchIcon =
-                    document.querySelector('link[rel="apple-touch-icon"]');
+                // Set the icon directly using base64
+                const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
                 if (appleTouchIcon) {
-                    appleTouchIcon.href = iconUrl;
+                    appleTouchIcon.href = iconUrl; // Use base64 string directly
                 } else {
-                    const newLink =
-                        document.createElement('link');
-                    newLink.rel =
-                        'apple-touch-icon';
-                    newLink.href =
-                        iconUrl;
+                    const newLink = document.createElement('link');
+                    newLink.rel = 'apple-touch-icon';
+                    newLink.href = iconUrl; // Use base64 string directly
                     document.head.appendChild(newLink);
                 }
-                const appTitleMeta =
-                    document.querySelector(
-                        'meta[name="apple-mobile-web-app-title"]'
-                    );
+
+                // Update app title
+                const appTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
                 if (appTitleMeta) {
-                    appTitleMeta.content =
-                        appTitle;
+                    appTitleMeta.content = appTitle;
                 } else {
-                    const newMeta =
-                        document.createElement(
-                            'meta'
-                        );
-                    newMeta.name =
-                        'apple-mobile-web-app-title';
-                    newMeta.content =
-                        appTitle;
+                    const newMeta = document.createElement('meta');
+                    newMeta.name = 'apple-mobile-web-app-title';
+                    newMeta.content = appTitle;
                     document.head.appendChild(newMeta);
                 }
 
-                document.title =
-                    appTitle;
+                document.title = appTitle; // Update document title
             }
-
+            
             function saveUploadedFile(file) {
                 const reader = new FileReader();
                 reader.onload = function (event) {
