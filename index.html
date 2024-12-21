@@ -250,7 +250,7 @@
                 let passwordFieldValue = passwordField.value || localStorage.getItem('encryptionPassword');
                 savePassword(passwordFieldValue);
 
-                await showAlert('The file will take longer to load the first time, requiring you to click "Decrypt and Render." After that, it will load faster and open automatically.')
+                await showAlert('Note:<br>  -The file will take longer to load the first time<br>   -You only need to click "Decrypt and Render" the first time<br> After this it will load faster and open automatically.')
 
                 if (savedFile && passwordFieldValue) {
                     try {
