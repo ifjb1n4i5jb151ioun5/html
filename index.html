@@ -243,14 +243,13 @@
             }
 
             viewbutton.addEventListener('click', async function () {
+                await showAlert('Note:<br>  -The file will take longer to load the first time<br>   -You only need to click "Decrypt and Render" the first time<br> After this it will load faster and open automatically.')
+
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 loadingOverlay.style.display = 'block';
-
                 const savedFile = localStorage.getItem('savedFile');
                 let passwordFieldValue = passwordField.value || localStorage.getItem('encryptionPassword');
                 savePassword(passwordFieldValue);
-
-                await showAlert('Note:<br>  -The file will take longer to load the first time<br>   -You only need to click "Decrypt and Render" the first time<br> After this it will load faster and open automatically.')
 
                 if (savedFile && passwordFieldValue) {
                     try {
