@@ -148,6 +148,7 @@
             filebutton.style.display = 'none';
 
             if (window.navigator.standalone) {
+                applyConfigButton.style.display = 'none';
             } else {
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
@@ -157,12 +158,6 @@
             if (savedFile) {
                 document.getElementById('savedfilebutton').style.display = 'inline-block';
             }
-
-            configFileInput.addEventListener('change', function () {
-                if (configFileInput.files.length > 0) {
-                } else {
-                }
-            });
 
             renderFileInput.addEventListener('change', function () {
                 if (renderFileInput.files.length > 0) {
