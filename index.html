@@ -149,10 +149,12 @@
 
             if (window.navigator.standalone) {
                 applyConfigButton.style.display = 'none';
+                passwordField.style.display = 'none';
             } else {
                 renderFileInput.style.display = "none";
                 viewbutton.style.display = "none";
                 uploadfilebutton.style.display = "none";
+                passwordField.style.display = 'inline-block';
             }
 
             if (savedFile) {
@@ -172,9 +174,9 @@
 
             renderFileInput.addEventListener('change', function (){
                 if (renderFileInput.files.length > 0) {
-                    passwordField.style.display = 'none';
-                } else {
                     passwordField.style.display = 'inline-block';
+                } else {
+                    passwordField.style.display = 'none';
                 }
             })
 
