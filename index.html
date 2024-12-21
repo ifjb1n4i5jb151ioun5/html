@@ -244,7 +244,7 @@
             }
 
             viewbutton.addEventListener('click', async function () {
-                await showAlert('Note:<br>  -   The file will take longer to load the first time, fonts and images may take a couple seconds to load<br>   -   You only need to click "Decrypt and Render" the first time<br><br> After this it will load faster and open automatically.')
+                await showAlert('Note:<br>  -   The file will take longer to load the first time. Fonts, images and buttons may take a couple seconds to load<br>   -   You only need to click "Decrypt and Render" the first time<br><br> After this it will load faster and open automatically.')
 
                 const loadingOverlay = document.getElementById('loadingOverlay');
                 loadingOverlay.style.display = 'block';
