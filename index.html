@@ -23,7 +23,6 @@
         <article id="uploadFile">
             <button id="rememberedpasswordbutton" style="display: none;">Password Saved</button>
             <button id="savedfilebutton">File Saved</button>
-            <button id="clearPasswordButton" style="display: none;">Clear Password</button>
             <button id="passwordfieldButton">Enter Password...</button>
             <input type="password" id="passwordField" style="display: none;">
             <button id="uploadfilebutton">Upload File</button>
@@ -100,13 +99,6 @@
             document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
             document.getElementById('clearPasswordButton').style.display = 'inline-block';
             document.getElementById('passwordfieldButton').style.display = 'none';
-        }
-
-        function clearSavedPassword() {
-            localStorage.removeItem('encryptionPassword');
-            document.getElementById('rememberedpasswordbutton').style.display = 'none';
-            document.getElementById('clearPasswordButton').style.display = 'none';
-            document.getElementById('passwordField').value = '';
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -336,11 +328,6 @@
                 function () { renderFileInput.click(); }
             );
 
-            clearPasswordButton.addEventListener(
-                'click',
-                clearSavedPassword
-            );
-
             // Check for file changes
             renderFileInput.addEventListener(
                 'change',
@@ -352,19 +339,25 @@
                 const savedEncryptedContent = localStorage.getItem('savedFile');
                 const savedPasswordValue = localStorage.getItem('encryptionPassword');
 
-                try {
-                    const decryptedContent =
-                        aesDecrypt(atob(savedEncryptedContent), savedPasswordValue);
-                    document.open();
-                    document.write(decryptedContent);
-                    document.close();
-                } catch (error) {
-                    showAlert(
-                        'Failed to automatically decrypt the saved file. Please check your password.'
-                    );
-                }
-            }
+                (async function () {
+                    try {
+                        const decryptedContent = aesDecrypt(atob(savedEncryptedContent), savedPasswordValue);
+                        const blob = new Blob([decryptedContent], { type: 'text/plain' });
+                        const decryptedHash = await computeFileHash(blob);
+                        const allowedHashes = await loadAllowedHashes();
 
+                        if (allowedHashes.includes(decryptedHash)) {
+                            document.open();
+                            document.write(decryptedContent);
+                            document.close();
+                        } else {
+                            showAlert(`The encrypted file is not allowed. Calculated hash: ${decryptedHash}`);
+                        }
+                    } catch (error) {
+                        showAlert('Failed to automatically decrypt the saved file or verify its hash. Please check your password.');
+                    }
+                })();
+            }
         });
     </script>
 
