@@ -97,6 +97,7 @@
         function savePassword(password) {
             localStorage.setItem('encryptionPassword', password);
             document.getElementById('rememberedpasswordbutton').style.display = 'inline-block';
+            document.getElementById('passwordfieldButton').style.display = 'none';
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -339,7 +340,7 @@
                 (async function () {
                     try {
                         const decryptedContent = aesDecrypt(atob(savedEncryptedContent), savedPasswordValue);
-                        const blob = new Blob([savedEncryptedContent], { type: 'text/plain' });
+                        const blob = new Blob([decryptedContent], { type: 'text/plain' });
                         const decryptedHash = await computeFileHash(blob);
                         const allowedHashes = await loadAllowedHashes();
 
